@@ -1,0 +1,5 @@
+2026/11/04-18:37:43.167 66c Creating DB E:\Nexum-Website\.tmp-chrome-qa\Default\Local Storage\leveldb since it was missing.
+2026/11/04-18:37:43.215 66c Reusing MANIFEST E:\Nexum-Website\.tmp-chrome-qa\Default\Local Storage\leveldb/MANIFEST-000001
+2026/11/04-18:40:58.059 66c Level-0 table #5: started
+2026/11/04-18:40:58.105 66c Level-0 table #5: 78597 bytes OK
+2026/11/04-18:40:58.149 66c Delete type=0 #3
