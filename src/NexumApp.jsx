@@ -93,9 +93,28 @@ function Footer() {
     <div className="footer-main">
       <div className="footer-brand"><strong>nexum<span>.</span></strong><p>Digital systems and growth marketing for ambitious businesses.</p></div>
       <div><h3>Explore</h3>{navItems.slice(0, 4).map(([label, href]) => <NavLink key={href} to={href}>{label}</NavLink>)}</div>
-      <div><h3>Start a conversation</h3><a href="mailto:hello@nexum.global">hello@nexum.global</a><BookButton className="text-link">Book strategy call <ArrowUpRight size={15} /></BookButton></div>
+      <div className="footer-contact">
+        <h3>Start a conversation</h3>
+        <a href="mailto:info@nexumglobal.solutions">info@nexumglobal.solutions</a>
+        <p className="footer-address">Office # 105, 1st Floor, Landmark Plaza, Jail Road, Gulberg, Lahore, Pakistan</p>
+        <div className="footer-socials" aria-label="Nexum Global Solutions social media profiles">
+          <a href="https://www.facebook.com/nexumglobalsolutions/" target="_blank" rel="noreferrer" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4.2c-.5-.1-2.2-.2-4.1-.2C9 4 6.3 6.4 6.3 10.8V14H2v4.7h4.3V24h5.2v-5.3h4.1L16.3 14h-4.8v-2.8C11.5 9.8 11.9 8 14 8Z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/nexumglobalsolutions/" target="_blank" rel="noreferrer" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1" className="social-fill"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/company/nexum-global-solutions/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="4" height="12"/><circle cx="5" cy="5" r="2" className="social-fill"/><path d="M11 21V9h4v1.8c1-1.4 2.3-2.2 4-2.2 3 0 4 2 4 5.4v7h-4v-6.2c0-1.6-.5-2.7-1.9-2.7-1.5 0-2.1 1.1-2.1 3.1V21Z"/></svg>
+          </a>
+          <a href="https://www.youtube.com/@NexumGlobalSolutions" target="_blank" rel="noreferrer" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 8.2a3 3 0 0 0-2.1-2.1C18 5.6 15.4 5.5 12 5.5s-6 .1-7.9.6A3 3 0 0 0 2 8.2c-.5 1.5-.5 3.8-.5 3.8s0 2.3.5 3.8a3 3 0 0 0 2.1 2.1c1.9.5 4.5.6 7.9.6s6-.1 7.9-.6a3 3 0 0 0 2.1-2.1c.5-1.5.5-3.8.5-3.8s0-2.3-.5-3.8Z"/><path d="m10 15.5 6-3.5-6-3.5Z" className="social-play"/></svg>
+          </a>
+        </div>
+        <BookButton className="text-link">Book strategy call <ArrowUpRight size={15} /></BookButton>
+      </div>
     </div>
-    <div className="footer-bottom"><span>© 2026 Nexum Digital Studio</span><span>Strategy · Creative · Technology</span></div>
+    <div className="footer-bottom"><span>© 2026 Nexum Global Solutions. All rights reserved.</span><span>Strategy · Creative · Technology</span></div>
   </footer>
 }
 
