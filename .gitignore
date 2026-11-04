@@ -3,5 +3,6 @@ dist/
 .npm-cache/
 .vendor-cache/
 .edge-*
+.tmp-chrome-qa/
 .qa-*.png
 *.log
