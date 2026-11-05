@@ -96,7 +96,8 @@ function Footer() {
       <div className="footer-contact">
         <h3>Start a conversation</h3>
         <a href="mailto:info@nexumglobal.solutions">info@nexumglobal.solutions</a>
-        <p className="footer-address">Office # 105, 1st Floor, Landmark Plaza, Jail Road, Gulberg, Lahore, Pakistan</p>
+        <p className="footer-address">Head Office<br />137 A, Muslim Town, Lahore, Pakistan</p>
+        <a href="tel:+923278223333">Phone: +92 327 8223333</a>
         <div className="footer-socials" aria-label="Nexum Global Solutions social media profiles">
           <a href="https://www.facebook.com/nexumglobalsolutions/" target="_blank" rel="noreferrer" aria-label="Facebook">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4.2c-.5-.1-2.2-.2-4.1-.2C9 4 6.3 6.4 6.3 10.8V14H2v4.7h4.3V24h5.2v-5.3h4.1L16.3 14h-4.8v-2.8C11.5 9.8 11.9 8 14 8Z"/></svg>
