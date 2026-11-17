@@ -22,7 +22,7 @@ function config() {
   if (!uri) return null
   return {
     uri,
-    dbName: process.env.MONGODB_DB || 'nexum_bms',
+    dbName: process.env.MONGODB_DB || 'nexum_digital_studio',
     secret: createHash('sha256').update(`${uri}|NEXBMS-SESSION-V2`).digest(),
   }
 }

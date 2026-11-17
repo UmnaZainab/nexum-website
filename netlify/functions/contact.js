@@ -13,7 +13,7 @@ function getDb() {
         throw error
       })
   }
-  return clientPromise.then(client => client.db(process.env.MONGODB_DB || 'nexum_bms'))
+  return clientPromise.then(client => client.db(process.env.MONGODB_DB || 'nexum_digital_studio'))
 }
 
 const reply = (statusCode, body) => ({

@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs'
 import { createAdminHandler } from '../netlify/functions/admin.js'
 
 process.env.MONGODB_URI = 'mongodb://127.0.0.1:27017/test'
-process.env.MONGODB_DB = 'nexum_bms'
+process.env.MONGODB_DB = 'nexum_digital_studio'
 process.env.CORS_ORIGIN = 'https://nexum.example'
 
 const user = {
@@ -33,7 +33,7 @@ const collections = {
   },
 }
 const handler = createAdminHandler(async settings => {
-  assert.equal(settings.dbName, 'nexum_bms')
+  assert.equal(settings.dbName, 'nexum_digital_studio')
   return { collection: name => collections[name] }
 })
 
