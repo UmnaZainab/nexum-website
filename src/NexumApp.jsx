@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
+import { submitContact } from './contactApi'
 import { NavLink, Route, Routes, useLocation } from './siteRouter'
 import {
   ArrowUpRight, ChartNoAxesCombined, CheckCircle2, Globe2,
@@ -156,6 +157,42 @@ function CTA({ eyebrow = 'LET’S BUILD YOUR NEXT GROWTH SYSTEM', title = 'Ready
   return <Reveal as="section" className="cta-band"><div><p className="eyebrow">{eyebrow}</p><h2>{title}</h2><p>{copy}</p></div><BookButton /></Reveal>
 }
 
+function ContactForm() {
+  const [status, setStatus] = useState('idle')
+  const [error, setError] = useState('')
+  const submit = async event => {
+    event.preventDefault()
+    if (status === 'pending') return
+    const form = event.currentTarget
+    const values = Object.fromEntries(new FormData(form))
+    setStatus('pending')
+    setError('')
+    try {
+      await submitContact(values)
+      form.reset()
+      setStatus('success')
+    } catch (failure) {
+      setError(failure.message)
+      setStatus('error')
+    }
+  }
+  return <form className="nexum-contact-form" onSubmit={submit}>
+    <h3>Send us an inquiry</h3>
+    <p>Tell us what you are planning, and our team will get back to you.</p>
+    <div className="form-grid">
+      <label>Name <input name="name" autoComplete="name" maxLength={150} required /></label>
+      <label>Email <input name="email" type="email" autoComplete="email" maxLength={254} required /></label>
+      <label>Phone <input name="phone" type="tel" autoComplete="tel" maxLength={50} /></label>
+      <label>Company <input name="company" autoComplete="organization" maxLength={150} /></label>
+    </div>
+    <label>Service <select name="service" defaultValue=""><option value="">Select a service (optional)</option><option>Digital marketing</option><option>Social media marketing</option><option>Digital products</option><option>Consultation</option><option>Other</option></select></label>
+    <label>Message <textarea name="message" maxLength={5000} rows={5} required /></label>
+    <button className="button" type="submit" disabled={status === 'pending'}>{status === 'pending' ? 'Sending…' : 'Send inquiry'}</button>
+    {status === 'success' && <p className="form-success" role="status">Thanks, your inquiry was sent. We’ll be in touch soon.</p>}
+    {status === 'error' && <p className="form-error" role="alert">{error}</p>}
+  </form>
+}
+
 function Home() {
   return <>
     <section className="hero section-wide">
@@ -178,6 +215,7 @@ function Home() {
     <section className="section contact-section" id="contact">
       <Reveal><div><p className="eyebrow">CONTACT NEXUM</p><h2>What could your next stage of growth look like?</h2><p>Tell us where you are today. In a focused 30-minute call, we’ll identify the clearest opportunity and outline the first steps.</p></div></Reveal>
       <Reveal delay={100}><div className="contact-card"><span>NO GENERIC SALES PITCH</span><h3>A practical strategy conversation.</h3><ul><li><CheckCircle2 size={17}/>Clarify your highest-leverage goal</li><li><CheckCircle2 size={17}/>Explore the right channels or systems</li><li><CheckCircle2 size={17}/>Leave with a clear next step</li></ul><BookButton /></div></Reveal>
+      <Reveal className="contact-form-wrap"><ContactForm /></Reveal>
     </section>
   </>
 }

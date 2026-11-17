@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { submitContact } from './contactApi'
 import { NavLink, Route, Routes, useLocation } from './router'
 import {
   ArrowUpRight, BarChart3, ChartNoAxesCombined, CheckCircle2, Globe2,
@@ -186,16 +187,40 @@ function FAQs() {
 
 function Contact() {
   const [status,setStatus]=useState('idle')
-  const submit=e=>{e.preventDefault();setStatus('pending');setTimeout(()=>setStatus('success'),650)}
+  const [error,setError]=useState('')
+  const submit=async e=>{
+    e.preventDefault()
+    if(status==='pending') return
+    const form=e.currentTarget
+    const values=Object.fromEntries(new FormData(form))
+    setStatus('pending')
+    setError('')
+    try {
+      await submitContact({
+        name:values.name, email:values.email, phone:values.phone,
+        company:values.company, service:values.service,
+        message:values.website ? `Website: ${values.website}\n\n${values.goals}` : values.goals,
+      })
+      form.reset()
+      setStatus('success')
+    } catch(failure) {
+      setError(failure.message)
+      setStatus('error')
+    }
+  }
   return <>
     <Reveal><section className="section page-hero contact-intro"><SectionIntro eyebrow="CONTACT US" title="Let’s talk about your next stage of growth." copy="Tell us where you are today and where you want to go. We’ll explore how a connected digital and social marketing strategy can help." /></section></Reveal>
     <section className="contact-zone"><Reveal><div className="contact-wrap"><p className="eyebrow">YOUR NEXT CHAPTER STARTS HERE</p><h2>Ready to Grow Your Business?</h2><p className="lede">Let’s find the biggest opportunity in your marketing—and build a clear plan to capture it.</p><form onSubmit={submit}>
       <label>Name<input name="name" placeholder="Your name" required autoComplete="name" /></label>
       <label>Work email<input name="email" type="email" placeholder="you@company.com" required autoComplete="email" /></label>
+      <label>Phone<input name="phone" type="tel" autoComplete="tel" /></label>
+      <label>Company<input name="company" autoComplete="organization" /></label>
+      <label>Service<select name="service" defaultValue=""><option value="">Select a service (optional)</option><option>Digital marketing</option><option>Social media marketing</option><option>Consultation</option><option>Other</option></select></label>
       <label>Website<input name="website" type="url" placeholder="https://yourcompany.com" autoComplete="url" /></label>
       <label>What would you like to achieve?<textarea name="goals" placeholder="Tell us about your business and goals" required /></label>
       <button className="button form-button" disabled={status==='pending'}>{status==='pending'?'Sending…':status==='success'?'Request received':'Book a Consultation'}</button>
       {status==='success'&&<p className="form-success" role="status">Thanks — we’ll be in touch soon.</p>}
+      {status==='error'&&<p className="form-error" role="alert">{error}</p>}
     </form><p className="micro centered">A focused conversation about your goals. No one-size-fits-all pitch.</p></div></Reveal></section>
   </>
 }
