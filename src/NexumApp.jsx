@@ -6,7 +6,7 @@ import {
   Layers3, Megaphone, PenTool, Search, Target, Users, X,
 } from './icons'
 
-const CALENDLY_URL = 'https://calendly.com/umnazainab07/30min'
+const CALENDLY_URL = 'https://calendly.com/nexumglobalsolutions'
 const BookingContext = createContext(() => {})
 
 const navItems = [
@@ -62,10 +62,10 @@ function BookingModal({ open, onClose }) {
   return <div className="booking-backdrop" onMouseDown={event => event.target === event.currentTarget && onClose()}>
     <section className="booking-modal" role="dialog" aria-modal="true" aria-labelledby="booking-title">
       <div className="booking-head">
-        <div><span>30 MINUTE STRATEGY CALL</span><h2 id="booking-title">Choose a time that works.</h2></div>
+        <div><span>STRATEGY CALL</span><h2 id="booking-title">Choose a time that works.</h2><a className="booking-open-link" href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">Open Calendly in a new tab <ArrowUpRight size={14} /></a></div>
         <button onClick={onClose} aria-label="Close appointment scheduler"><X size={22} /></button>
       </div>
-      <iframe title="Schedule a 30 minute call with Nexum" src={`${CALENDLY_URL}?embed_type=Inline&hide_gdpr_banner=1&background_color=0b1020&text_color=eff3ff&primary_color=8b7cf6`} />
+      <iframe title="Schedule a call with Nexum" src={`${CALENDLY_URL}?embed_type=Inline&hide_gdpr_banner=1&background_color=0b1020&text_color=eff3ff&primary_color=8b7cf6`} />
     </section>
   </div>
 }
