@@ -9,3 +9,6 @@ dist/
 .tmp-chrome-qa/
 .qa-*.png
 *.log
+
+# Local Netlify folder
+.netlify

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { submitContact } from './contactApi'
+import Admin from './Admin'
 import { NavLink, Route, Routes, useLocation } from './siteRouter'
 import {
   ArrowUpRight, ChartNoAxesCombined, CheckCircle2, Globe2,
@@ -279,5 +280,7 @@ function Pricing() {
 
 export default function NexumApp() {
   const [bookingOpen, setBookingOpen] = useState(false)
-  return <BookingContext.Provider value={() => setBookingOpen(true)}><ScrollManager/><Header/><main><Routes><Route path="/" element={<Home/>}/><Route path="/services" element={<Services/>}/><Route path="/pricing" element={<Pricing/>}/><Route path="*" element={<Home/>}/></Routes></main><Footer/><BookingModal open={bookingOpen} onClose={()=>setBookingOpen(false)}/></BookingContext.Provider>
+  const { pathname } = useLocation()
+  const isAdmin = pathname === '/admin'
+  return <BookingContext.Provider value={() => setBookingOpen(true)}>{!isAdmin && <ScrollManager/>}{!isAdmin && <Header/>}<main><Routes><Route path="/admin" element={<Admin/>}/><Route path="/" element={<Home/>}/><Route path="/services" element={<Services/>}/><Route path="/pricing" element={<Pricing/>}/><Route path="*" element={<Home/>}/></Routes></main>{!isAdmin && <Footer/>}{!isAdmin && <BookingModal open={bookingOpen} onClose={()=>setBookingOpen(false)}/>}</BookingContext.Provider>
 }

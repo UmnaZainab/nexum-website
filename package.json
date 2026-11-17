@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "lucide-react": "^1.68.0",
     "mongodb": "^6.5.0",
     "react": "19.3.0",
