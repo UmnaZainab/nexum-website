@@ -27,6 +27,26 @@ function ScrollManager() {
   return null
 }
 
+function ScrollToTopButton() {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const update = () => setVisible(window.scrollY > 600)
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    return () => window.removeEventListener('scroll', update)
+  }, [])
+
+  const scrollToTop = () => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'instant' : 'smooth' })
+  }
+
+  return <button type="button" className={`scroll-to-top ${visible ? 'show' : ''}`} onClick={scrollToTop} aria-label="Back to top" title="Back to top" tabIndex={visible ? 0 : -1}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+}
+
 function Reveal({ children, className = '', delay = 0, as: Tag = 'div' }) {
   const ref = useRef(null)
   useEffect(() => {
@@ -134,7 +154,7 @@ function HeroDashboard() {
   return <div className="hero-visual" aria-label="Illustrative connected growth dashboard">
     <div className="visual-top"><span><ChartNoAxesCombined size={19} /> Growth command center</span><em><i /> LIVE SIGNALS</em></div>
     <div className="visual-metric"><span>Marketing momentum</span><strong>+38.4%</strong><small>illustrative performance view</small></div>
-    <svg viewBox="0 0 520 190" role="img" aria-label="Rising performance trend illustration"><defs><linearGradient id="chart-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#9b8cff" stopOpacity=".4"/><stop offset="1" stopColor="#9b8cff" stopOpacity="0"/></linearGradient></defs><path className="chart-grid" d="M0 35H520M0 80H520M0 125H520M0 170H520"/><path className="chart-area" d="M0 153C48 142 58 126 101 133S165 95 208 108s75-55 119-42 63-25 104-24 62-25 89-31V190H0Z"/><path className="chart-line" d="M0 153C48 142 58 126 101 133S165 95 208 108s75-55 119-42 63-25 104-24 62-25 89-31"/></svg>
+    <svg viewBox="0 0 520 190" role="img" aria-label="Rising performance trend illustration"><defs><linearGradient id="chart-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#FF3A4D" stopOpacity=".4"/><stop offset="1" stopColor="#FF3A4D" stopOpacity="0"/></linearGradient></defs><path className="chart-grid" d="M0 35H520M0 80H520M0 125H520M0 170H520"/><path className="chart-area" d="M0 153C48 142 58 126 101 133S165 95 208 108s75-55 119-42 63-25 104-24 62-25 89-31V190H0Z"/><path className="chart-line" d="M0 153C48 142 58 126 101 133S165 95 208 108s75-55 119-42 63-25 104-24 62-25 89-31"/></svg>
     <div className="visual-tags"><span>SEO</span><span>Paid media</span><span>Social</span><span>Automation</span></div>
     <div className="orbit orbit-one" /><div className="orbit orbit-two" />
   </div>
@@ -282,5 +302,5 @@ export default function NexumApp() {
   const [bookingOpen, setBookingOpen] = useState(false)
   const { pathname } = useLocation()
   const isAdmin = pathname === '/admin'
-  return <BookingContext.Provider value={() => setBookingOpen(true)}>{!isAdmin && <ScrollManager/>}{!isAdmin && <Header/>}<main><Routes><Route path="/admin" element={<Admin/>}/><Route path="/" element={<Home/>}/><Route path="/services" element={<Services/>}/><Route path="/pricing" element={<Pricing/>}/><Route path="*" element={<Home/>}/></Routes></main>{!isAdmin && <Footer/>}{!isAdmin && <BookingModal open={bookingOpen} onClose={()=>setBookingOpen(false)}/>}</BookingContext.Provider>
+  return <BookingContext.Provider value={() => setBookingOpen(true)}>{!isAdmin && <ScrollManager/>}{!isAdmin && <Header/>}<main><Routes><Route path="/admin" element={<Admin/>}/><Route path="/" element={<Home/>}/><Route path="/services" element={<Services/>}/><Route path="/pricing" element={<Pricing/>}/><Route path="*" element={<Home/>}/></Routes></main>{!isAdmin && <Footer/>}{!isAdmin && !bookingOpen && <ScrollToTopButton/>}{!isAdmin && <BookingModal open={bookingOpen} onClose={()=>setBookingOpen(false)}/>}</BookingContext.Provider>
 }
