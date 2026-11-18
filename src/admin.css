@@ -40,3 +40,29 @@
 .admin-saved{display:block;margin-top:6px;color:var(--blue-bright);font-size:.72rem;font-weight:800}
 .admin-pricing-loading{color:var(--muted)}
 @media(max-width:600px){.admin-pricing-card{padding:20px 16px}.admin-dashboard-head{align-items:flex-start}.admin-tabs button{padding-left:14px;padding-right:14px}}
+
+.admin-login-top{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.admin-dashboard-head{border-bottom:1px solid var(--line);padding-bottom:22px}
+.admin-page .theme-toggle{box-shadow:none}
+:root[data-theme="light"] .admin-page{background:radial-gradient(circle at 80% 10%,rgba(204,0,0,.06),transparent 36%),#F4F7FB;color:#0B1626}
+:root[data-theme="light"] .admin-login-card,:root[data-theme="light"] .admin-inquiry,:root[data-theme="light"] .admin-empty,:root[data-theme="light"] .admin-pricing-card{background:#fff;border-color:rgba(11,22,38,.14);box-shadow:0 18px 42px rgba(16,30,54,.09)}
+:root[data-theme="light"] .admin-login-card label,:root[data-theme="light"] .admin-dashboard-head h1,:root[data-theme="light"] .admin-inquiry h2,:root[data-theme="light"] .admin-pricing-card h2{color:#0B1626}
+:root[data-theme="light"] .admin-login-card input,:root[data-theme="light"] .admin-toolbar input,:root[data-theme="light"] .admin-pricing-table input{background:#F6F8FC;border-color:rgba(11,22,38,.2);color:#0B1626}
+:root[data-theme="light"] .admin-login-card input:focus,:root[data-theme="light"] .admin-toolbar input:focus,:root[data-theme="light"] .admin-pricing-table input:focus{border-color:#8E0C1B;outline-color:#8E0C1B}
+:root[data-theme="light"] .admin-dashboard-head{border-color:rgba(11,22,38,.14)}
+:root[data-theme="light"] .admin-tabs{border-color:rgba(11,22,38,.14)}
+:root[data-theme="light"] .admin-tabs button{color:#51627A}
+:root[data-theme="light"] .admin-tabs button:hover,:root[data-theme="light"] .admin-tabs button.active{color:#0B1626}
+:root[data-theme="light"] .admin-tabs button.active:after{background:#CC0000}
+:root[data-theme="light"] .admin-user-badge{background:#EAF0F8;border-color:rgba(11,22,38,.14);color:#174C75}
+:root[data-theme="light"] .admin-controls button:not(.theme-toggle),:root[data-theme="light"] .admin-toolbar button,:root[data-theme="light"] .admin-delete{background:#fff;border-color:rgba(11,22,38,.18);color:#0B1626}
+:root[data-theme="light"] .admin-controls button:not(.theme-toggle):hover,:root[data-theme="light"] .admin-toolbar button:hover{background:#FFF1F3;border-color:#CC0000;color:#8E0C1B}
+:root[data-theme="light"] .admin-delete{color:#8E0C1B}
+:root[data-theme="light"] .admin-delete:hover{background:#FFF1F3;border-color:#CC0000}
+:root[data-theme="light"] .admin-pricing-table thead{background:#EAF0F8}
+:root[data-theme="light"] .admin-pricing-table th,:root[data-theme="light"] .admin-pricing-table td{border-color:rgba(11,22,38,.12)}
+:root[data-theme="light"] .admin-pricing-table thead th,:root[data-theme="light"] .admin-pricing-table tbody td{color:#51627A}
+:root[data-theme="light"] .admin-pricing-table tbody th{color:#0B1626}
+:root[data-theme="light"] .admin-default-marker,:root[data-theme="light"] .admin-saved{color:#174C75}
+:root[data-theme="light"] .admin-price-save{background:linear-gradient(135deg,#E60016,#CC0000 55%,#8E0C1B);color:#fff}
+:root[data-theme="light"] .admin-error{color:#8E0C1B}

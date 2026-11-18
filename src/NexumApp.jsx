@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { submitContact } from './contactApi'
 import { defaultPricingItems, formatPrice } from './pricingItems'
+import ThemeToggle, { useSiteTheme } from './ThemeToggle'
 import Admin from './Admin'
 import { NavLink, Route, Routes, useLocation } from './siteRouter'
 import {
@@ -92,7 +93,7 @@ function BookingModal({ open, onClose }) {
   </div>
 }
 
-function Header() {
+function Header({ theme, setTheme }) {
   const [open, setOpen] = useState(false)
   const { pathname, hash } = useLocation()
   useEffect(() => setOpen(false), [pathname, hash])
@@ -103,11 +104,12 @@ function Header() {
   }, [])
   return <header className="site-header"><div className="header-inner">
     <NavLink to="/" className="brand" aria-label="Nexum Digital Studio home"><strong>nexum<span>.</span></strong><small>DIGITAL STUDIO</small></NavLink>
-    <button className={`menu-toggle ${open ? 'open' : ''}`} onClick={() => setOpen(!open)} aria-label="Toggle navigation" aria-expanded={open}><i /><i /></button>
     <nav className={`nav ${open ? 'open' : ''}`} aria-label="Primary navigation">
       {navItems.map(([label, href]) => <NavLink key={href} to={href} end={href === '/'}>{label}</NavLink>)}
       <BookButton className="nav-cta">Book a call</BookButton>
     </nav>
+    <ThemeToggle theme={theme} setTheme={setTheme} />
+    <button className={`menu-toggle ${open ? 'open' : ''}`} onClick={() => setOpen(!open)} aria-label="Toggle navigation" aria-expanded={open}><i /><i /></button>
   </div></header>
 }
 
@@ -356,7 +358,8 @@ function Pricing() {
 
 export default function NexumApp() {
   const [bookingOpen, setBookingOpen] = useState(false)
+  const [theme, setTheme] = useSiteTheme()
   const { pathname } = useLocation()
   const isAdmin = pathname === '/admin'
-  return <BookingContext.Provider value={() => setBookingOpen(true)}>{!isAdmin && <ScrollManager/>}{!isAdmin && <Header/>}<main><Routes><Route path="/admin" element={<Admin/>}/><Route path="/" element={<Home/>}/><Route path="/services" element={<Services/>}/><Route path="/pricing" element={<Pricing/>}/><Route path="/contact" element={<ContactPage/>}/><Route path="/privacy" element={<PrivacyPage/>}/><Route path="/terms" element={<TermsPage/>}/><Route path="*" element={<Home/>}/></Routes></main>{!isAdmin && <Footer/>}{!isAdmin && !bookingOpen && <ScrollToTopButton/>}{!isAdmin && <BookingModal open={bookingOpen} onClose={()=>setBookingOpen(false)}/>}</BookingContext.Provider>
+  return <BookingContext.Provider value={() => setBookingOpen(true)}>{!isAdmin && <ScrollManager/>}{!isAdmin && <Header theme={theme} setTheme={setTheme}/>}<main><Routes><Route path="/admin" element={<Admin theme={theme} setTheme={setTheme}/>}/><Route path="/" element={<Home/>}/><Route path="/services" element={<Services/>}/><Route path="/pricing" element={<Pricing/>}/><Route path="/contact" element={<ContactPage/>}/><Route path="/privacy" element={<PrivacyPage/>}/><Route path="/terms" element={<TermsPage/>}/><Route path="*" element={<Home/>}/></Routes></main>{!isAdmin && <Footer/>}{!isAdmin && !bookingOpen && <ScrollToTopButton/>}{!isAdmin && <BookingModal open={bookingOpen} onClose={()=>setBookingOpen(false)}/>}</BookingContext.Provider>
 }

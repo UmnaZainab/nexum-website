@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { formatPrice } from './pricingItems'
+import ThemeToggle from './ThemeToggle'
 import './admin.css'
 
 const endpoint = '/.netlify/functions/admin'
@@ -89,7 +90,7 @@ function PricingEditor({ onUnauthorized }) {
   </section>
 }
 
-export default function Admin() {
+export default function Admin({ theme, setTheme }) {
   const [authorized, setAuthorized] = useState(false)
   const [username, setUsername] = useState('')
   const [tab, setTab] = useState('inquiries')
@@ -189,7 +190,7 @@ export default function Admin() {
 
   return <div className="admin-page">
     {!authorized ? <div className="admin-login-shell"><form className="admin-login-card" onSubmit={login}>
-      <a className="admin-brand" href="/">nexum<span>.</span> <small>DIGITAL STUDIO</small></a>
+      <div className="admin-login-top"><a className="admin-brand" href="/">nexum<span>.</span> <small>DIGITAL STUDIO</small></a><ThemeToggle theme={theme} setTheme={setTheme} /></div>
       <p className="admin-eyebrow">PRIVATE DASHBOARD</p>
       <h1>Admin sign in</h1>
       <p>Enter your credentials to manage inquiries and pricing.</p>
@@ -200,7 +201,7 @@ export default function Admin() {
     </form></div> : <div className="admin-dashboard">
       <header className="admin-dashboard-head">
         <div><a className="admin-brand" href="/">nexum<span>.</span> <small>DIGITAL STUDIO</small></a><p className="admin-eyebrow">PRIVATE DASHBOARD</p><h1>{tab === 'inquiries' ? 'Website inquiries' : 'Pricing management'}</h1><p>{tab === 'inquiries' ? 'Contact form submissions, newest first.' : 'Manage the amounts shown on the public pricing page.'}</p></div>
-        <div className="admin-controls"><span className="admin-user-badge">Signed in: {username}</span><button type="button" onClick={logout} disabled={busy}>Log out</button></div>
+        <div className="admin-controls"><span className="admin-user-badge">Signed in: {username}</span><ThemeToggle theme={theme} setTheme={setTheme} /><button type="button" onClick={logout} disabled={busy}>Log out</button></div>
       </header>
       <nav className="admin-tabs" aria-label="Admin sections"><button type="button" className={tab === 'inquiries' ? 'active' : ''} aria-current={tab === 'inquiries' ? 'page' : undefined} onClick={() => { setTab('inquiries'); setError('') }}>Inquiries</button><button type="button" className={tab === 'pricing' ? 'active' : ''} aria-current={tab === 'pricing' ? 'page' : undefined} onClick={() => { setTab('pricing'); setError('') }}>Pricing</button></nav>
       {tab === 'pricing' ? <PricingEditor onUnauthorized={handleUnauthorized} /> : <>
