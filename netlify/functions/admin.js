@@ -17,7 +17,7 @@ const reply = (statusCode, body, headers = {}) => ({
   body: JSON.stringify(body),
 })
 
-function config() {
+export function config() {
   const uri = process.env.MONGODB_URI?.replace(/^["'\s]+|["'\s]+$/g, '')
   if (!uri) return null
   return {
@@ -37,7 +37,7 @@ function signature(payload, secret) {
   return createHmac('sha256', secret).update(payload).digest('base64url')
 }
 
-function getSession(event, settings) {
+export function getSession(event, settings) {
   const cookies = (event.headers?.cookie || event.headers?.Cookie || '').split(';')
   const token = cookies.find(part => part.trim().startsWith(`${cookieName}=`))?.trim().slice(cookieName.length + 1)
   if (!token || token.length > 2048) return null
@@ -57,7 +57,7 @@ function sessionCookie(user, version, settings) {
   return `${cookieName}=${payload}.${signature(payload, settings.secret)}; Max-Age=${sessionSeconds}; Path=/; HttpOnly; SameSite=Lax; Secure`
 }
 
-function getDb(settings) {
+export function getDb(settings) {
   if (!clientPromise) {
     clientPromise = new MongoClient(settings.uri, { serverSelectionTimeoutMS: 8000 }).connect().catch(error => {
       clientPromise = null
@@ -89,7 +89,7 @@ function verifyPassword(password, stored) {
     /^\$2[aby]\$/.test(stored) && bcrypt.compareSync(password, stored)
 }
 
-async function authenticatedUser(event, db, settings) {
+export async function authenticatedUser(event, db, settings) {
   const session = getSession(event, settings)
   if (!session) return null
   const user = await db.collection('admin_users').findOne({ username: session.user })
@@ -149,7 +149,8 @@ export function createAdminHandler(database = getDb) {
 
     try {
       const db = await database(settings)
-      if (!await authenticatedUser(event, db, settings)) {
+      const signedInUser = await authenticatedUser(event, db, settings)
+      if (!signedInUser) {
         return respond(401, { ok: false, detail: 'Authentication required.' })
       }
       const collection = db.collection('nexum_website_inquiries')
@@ -160,7 +161,7 @@ export function createAdminHandler(database = getDb) {
           company: company || '', service: service || '', message: message || '',
           pageSource: pageSource || '', createdAt: createdAt instanceof Date ? createdAt.toISOString() : createdAt || null,
         }))
-        return respond(200, { ok: true, items })
+        return respond(200, { ok: true, items, user: { username: signedInUser.username } })
       }
       const result = await collection.deleteOne({ _id: deleteId })
       if (!result.deletedCount) return respond(404, { ok: false, detail: 'Inquiry not found.' })

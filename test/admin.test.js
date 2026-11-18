@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import bcrypt from 'bcryptjs'
 import { createAdminHandler } from '../netlify/functions/admin.js'
+import { createPricingHandler } from '../netlify/functions/pricing.js'
 
 process.env.MONGODB_URI = 'mongodb://127.0.0.1:27017/test'
 process.env.MONGODB_DB = 'nexum_digital_studio'
@@ -66,4 +67,64 @@ test('MongoDB admin user can sign in, read inquiries, and delete one', async () 
   user.session_version = 'version-two'
   assert.equal((await request('GET', null, cookie)).statusCode, 401)
   assert.equal((await request('POST', { action: 'logout' }, cookie)).statusCode, 200)
+})
+
+const pricingUser = { ...user, session_version: 'pricing-version' }
+const pricingRows = new Map()
+const pricingDb = {
+  collection: name => {
+    if (name === 'admin_users') return { findOne: async ({ username }) => username === pricingUser.username ? pricingUser : null }
+    if (name === 'nexum_website_inquiries') return { find: () => ({ sort: () => ({ toArray: async () => [] }) }) }
+    if (name === 'pricing_items') return {
+      find: () => ({ toArray: async () => [...pricingRows.values()] }),
+      updateOne: async ({ id }, { $set }) => { pricingRows.set(id, { id, ...$set }); return { matchedCount: 1 } },
+    }
+    throw new Error(`Unexpected collection: ${name}`)
+  },
+}
+const pricingHandler = createPricingHandler(async settings => {
+  assert.equal(settings.dbName, 'nexum_digital_studio')
+  return pricingDb
+})
+const pricingAdminHandler = createAdminHandler(async () => pricingDb)
+const pricingRequest = (httpMethod, body, cookie) => pricingHandler({
+  httpMethod, body: body && JSON.stringify(body), headers: cookie ? { cookie } : {},
+})
+
+test('public pricing GET returns code defaults and updates require a session', async () => {
+  const response = await pricingRequest('GET')
+  assert.equal(response.statusCode, 200)
+  const items = JSON.parse(response.body).items
+  assert.deepEqual(items.map(({ id, amount, defaultAmount }) => [id, amount, defaultAmount]), [
+    ['starter-growth', 35000, 35000],
+    ['scale-performance', 75000, 75000],
+    ['enterprise-custom', 150000, 150000],
+  ])
+  assert.equal((await pricingRequest('PUT', { id: 'starter-growth', amount: 40000 })).statusCode, 401)
+  assert.equal((await pricingRequest('POST', { id: 'starter-growth', amount: 40000 })).statusCode, 401)
+})
+
+test('authenticated pricing updates validate amounts and upsert overrides', async () => {
+  const login = await pricingAdminHandler({
+    httpMethod: 'POST',
+    body: JSON.stringify({ action: 'login', user: pricingUser.username, pass: 'test-password-123' }),
+    headers: {},
+  })
+  assert.equal(login.statusCode, 200)
+  const cookie = login.headers['Set-Cookie'].split(';')[0]
+  assert.equal((await pricingRequest('PUT', { id: 'unknown', amount: 42000 }, cookie)).statusCode, 400)
+  assert.equal((await pricingRequest('PUT', { id: 'starter-growth', amount: -1 }, cookie)).statusCode, 400)
+  assert.equal((await pricingRequest('PUT', { id: 'starter-growth', amount: '42000' }, cookie)).statusCode, 400)
+  assert.equal((await pricingRequest('PUT', { id: 'starter-growth', amount: 42000.123 }, cookie)).statusCode, 400)
+  const update = await pricingRequest('PUT', { id: 'starter-growth', amount: 42000 }, cookie)
+  assert.equal(update.statusCode, 200)
+  assert.equal(JSON.parse(update.body).item.amount, 42000)
+  assert.equal(pricingRows.get('starter-growth').updatedBy, pricingUser.username)
+  assert.equal((await pricingRequest('POST', { id: 'scale-performance', amount: 80000 }, cookie)).statusCode, 200)
+  const items = JSON.parse((await pricingRequest('GET')).body).items
+  assert.equal(items.find(item => item.id === 'starter-growth').amount, 42000)
+  assert.equal(items.find(item => item.id === 'scale-performance').amount, 80000)
+  assert.equal(items.find(item => item.id === 'enterprise-custom').amount, 150000)
+  pricingUser.session_version = 'revoked-version'
+  assert.equal((await pricingRequest('PUT', { id: 'starter-growth', amount: 43000 }, cookie)).statusCode, 401)
 })

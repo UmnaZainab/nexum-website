@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { submitContact } from './contactApi'
+import { defaultPricingItems, formatPrice } from './pricingItems'
 import Admin from './Admin'
 import { NavLink, Route, Routes, useLocation } from './siteRouter'
 import {
@@ -309,9 +310,9 @@ function Services() {
 }
 
 const tiers = [
-  { name:'Starter Growth', eyebrow:'FOUNDATION', copy:'For emerging businesses building a consistent organic social presence.', price:'Rs. 35,000', suffix:'/ month', features:['2 Channels (Instagram & Facebook)','12 High-Quality Posts & Stories Monthly','Custom Graphic Design & Compelling Copy','4 Short Form Reels / Edits','Community Moderation & Page Management','Monthly Growth & Analytics Overview'] },
-  { name:'Scale & Performance', eyebrow:'MOST POPULAR', copy:'For growing brands ready to generate leads, run targeted ads, and scale sales.', price:'Rs. 75,000', suffix:'/ month', popular:true, features:['Meta & Google Paid Ads Setup & Optimization','16 Posts + 6 High-Conversion Reels','Audience Targeting, A/B Testing & Retargeting','Creative Ad Copies & Visual Assets','WhatsApp / Website Lead Generation Funnels','Bi-weekly Performance & ROI Reviews'] },
-  { name:'Enterprise Custom', eyebrow:'OMNICHANNEL', copy:'For established businesses scaling multi-channel digital growth.', price:'Rs. 150,000', suffix:'/ month onwards', features:['Full Funnel Multi-Platform Ads (Meta, Google & LinkedIn)','Dedicated Digital Strategist & Media Buyer','Advanced Video Content & Motion Creatives','SEO Audit & Conversion Rate Optimization','Custom Performance Tracking Dashboard','Direct WhatsApp / Call Support & Weekly Strategy Sprints'] },
+  { id:'starter-growth', name:'Starter Growth', eyebrow:'FOUNDATION', copy:'For emerging businesses building a consistent organic social presence.', suffix:'/ month', features:['2 Channels (Instagram & Facebook)','12 High-Quality Posts & Stories Monthly','Custom Graphic Design & Compelling Copy','4 Short Form Reels / Edits','Community Moderation & Page Management','Monthly Growth & Analytics Overview'] },
+  { id:'scale-performance', name:'Scale & Performance', eyebrow:'MOST POPULAR', copy:'For growing brands ready to generate leads, run targeted ads, and scale sales.', suffix:'/ month', popular:true, features:['Meta & Google Paid Ads Setup & Optimization','16 Posts + 6 High-Conversion Reels','Audience Targeting, A/B Testing & Retargeting','Creative Ad Copies & Visual Assets','WhatsApp / Website Lead Generation Funnels','Bi-weekly Performance & ROI Reviews'] },
+  { id:'enterprise-custom', name:'Enterprise Custom', eyebrow:'OMNICHANNEL', copy:'For established businesses scaling multi-channel digital growth.', suffix:'/ month onwards', features:['Full Funnel Multi-Platform Ads (Meta, Google & LinkedIn)','Dedicated Digital Strategist & Media Buyer','Advanced Video Content & Motion Creatives','SEO Audit & Conversion Rate Optimization','Custom Performance Tracking Dashboard','Direct WhatsApp / Call Support & Weekly Strategy Sprints'] },
 ]
 const matrix = [
   ['Growth strategy','Core','Full funnel','Custom'],['Organic social channels','2','Up to 4','Custom'],['Paid ads management','—','Included','Omnichannel'],['Creative iteration','Monthly','Weekly','Priority'],['SEO & CRO roadmap','—','Included','Advanced'],['Reporting','Monthly','Live dashboard','Executive'],['Dedicated account lead','—','Included','Senior lead'],
@@ -330,9 +331,23 @@ function FAQItem({ question, answer }) {
 
 function Pricing() {
   const [quarterly, setQuarterly] = useState(true)
+  const [amounts, setAmounts] = useState(() => Object.fromEntries(defaultPricingItems.map(item => [item.id, item.defaultAmount])))
+  useEffect(() => {
+    let active = true
+    fetch('/.netlify/functions/pricing', { cache: 'no-store' })
+      .then(response => response.ok ? response.json() : null)
+      .then(result => {
+        if (!active || !result?.ok || !Array.isArray(result.items)) return
+        setAmounts(current => Object.fromEntries(defaultPricingItems.map(item => {
+          const live = result.items.find(entry => entry.id === item.id)?.amount
+          return [item.id, typeof live === 'number' && Number.isFinite(live) ? live : current[item.id]]
+        })))
+      }).catch(() => {})
+    return () => { active = false }
+  }, [])
   return <>
     <section className="pricing-hero section-wide"><Reveal><p className="signal"><i /> TRANSPARENT BY DESIGN</p><h1>Choose the structure. <span>We’ll tailor the scope.</span></h1><p className="lede">Clear starting points for ongoing growth services, with every final retainer shaped around your goals, channels, and pace.</p></Reveal><Reveal delay={100}><div className="billing-toggle" role="group" aria-label="Billing frequency"><button className={!quarterly ? 'active' : ''} onClick={()=>setQuarterly(false)}>Monthly retainer</button><button className={quarterly ? 'active' : ''} onClick={()=>setQuarterly(true)}>Quarterly plan <span>Preferred value</span></button></div></Reveal></section>
-    <section className="section pricing-section"><div className="pricing-grid">{tiers.map((tier,i)=><Reveal as="article" className={`pricing-card ${tier.popular?'popular':''}`} delay={i*90} key={tier.name}>{tier.popular&&<div className="popular-glow"/>}<span className="tier-label">{tier.eyebrow}</span><h2>{tier.name}</h2><p>{tier.copy}</p><div className="tier-price"><strong>{tier.price}</strong><span>{quarterly && tier.price === 'Custom' ? '/ quarterly scope' : tier.suffix}</span></div><BookButton className="button">Inquire about this plan</BookButton><ul>{tier.features.map(f=><li key={f}><CheckCircle2 size={16}/>{f}</li>)}</ul></Reveal>)}</div></section>
+    <section className="section pricing-section"><div className="pricing-grid">{tiers.map((tier,i)=><Reveal as="article" className={`pricing-card ${tier.popular?'popular':''}`} delay={i*90} key={tier.id}>{tier.popular&&<div className="popular-glow"/>}<span className="tier-label">{tier.eyebrow}</span><h2>{tier.name}</h2><p>{tier.copy}</p><div className="tier-price"><strong>{formatPrice(amounts[tier.id])}</strong><span>{tier.suffix}</span></div><BookButton className="button">Inquire about this plan</BookButton><ul>{tier.features.map(f=><li key={f}><CheckCircle2 size={16}/>{f}</li>)}</ul></Reveal>)}</div></section>
     <section className="section comparison"><Reveal><SectionIntro eyebrow="COMPARE TIERS" title="The right level of support, at a glance." copy="Every engagement includes strategic direction, clear ownership, and agreed success measures."/></Reveal><Reveal><div className="matrix" role="table" aria-label="Pricing feature comparison"><div className="matrix-head" role="row"><strong>Deliverable</strong>{tiers.map(t=><strong key={t.name}>{t.name}</strong>)}</div>{matrix.map(([feature,...values])=><div className="matrix-row" role="row" key={feature}><b>{feature}</b>{values.map((v,i)=><span key={i} data-tier={tiers[i].name}>{v==='Included'?<><CheckCircle2 size={16}/> {v}</>:v}</span>)}</div>)}</div></Reveal></section>
     <section className="section faq-section"><Reveal><SectionIntro eyebrow="PRICING FAQ" title="Straight answers before we start." /></Reveal><div className="faq-list">{pricingFaqs.map(([q,a],i)=><Reveal delay={i*60} key={q}><FAQItem question={q} answer={a}/></Reveal>)}</div></section>
     <CTA eyebrow="NEED A CUSTOM SOFTWARE SCOPE?" title="Let’s price the outcome, not a generic package." copy="For enterprise platforms, invoicing systems, and AI workflow automation, we’ll map the requirements and build a tailored proposal." />
