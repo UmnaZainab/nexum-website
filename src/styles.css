@@ -84,3 +84,4 @@ footer{border-top:1px solid var(--border)}.footer-inner{width:min(100%,1200px);m
 
 .button{background:linear-gradient(135deg,#E60016,#CC0000 55%,#8E0C1B)}
 .theme-toggle:hover,.theme-toggle:focus-visible{border-color:var(--accent);color:var(--accent)}
+.site-header{position:sticky;top:0;z-index:60;border-bottom:1px solid var(--border)}
