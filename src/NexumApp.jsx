@@ -12,7 +12,7 @@ const BookingContext = createContext(() => {})
 
 const navItems = [
   ['Home', '/'], ['Services', '/services'], ['Products', '/#products'],
-  ['Pricing', '/pricing'], ['Contact', '/#contact'],
+  ['Pricing', '/pricing'], ['Contact', '/contact'],
 ]
 
 function ScrollManager() {
@@ -86,7 +86,7 @@ function BookingModal({ open, onClose }) {
         <div><span>STRATEGY CALL</span><h2 id="booking-title">Choose a time that works.</h2><a className="booking-open-link" href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">Open Calendly in a new tab <ArrowUpRight size={14} /></a></div>
         <button onClick={onClose} aria-label="Close appointment scheduler"><X size={22} /></button>
       </div>
-      <iframe title="Schedule a call with Nexum" src={`${CALENDLY_URL}?embed_type=Inline&hide_gdpr_banner=1&background_color=0b1020&text_color=eff3ff&primary_color=8b7cf6`} />
+      <iframe title="Schedule a call with Nexum" src={`${CALENDLY_URL}?embed_type=Inline&hide_gdpr_banner=1&background_color=0e1c2d&text_color=f5f7fa&primary_color=cc0000`} />
     </section>
   </div>
 }
@@ -111,33 +111,42 @@ function Header() {
 }
 
 function Footer() {
-  return <footer>
+  return <footer className="site-footer">
     <div className="footer-main">
-      <div className="footer-brand"><strong>nexum<span>.</span></strong><p>Digital systems and growth marketing for ambitious businesses.</p></div>
-      <div><h3>Explore</h3>{navItems.slice(0, 4).map(([label, href]) => <NavLink key={href} to={href}>{label}</NavLink>)}</div>
-      <div className="footer-contact">
-        <h3>Start a conversation</h3>
-        <a href="mailto:info@nexumglobal.solutions">info@nexumglobal.solutions</a>
-        <p className="footer-address">Head Office<br />137 A, Muslim Town, Lahore, Pakistan</p>
-        <a href="tel:+923278223333">Phone: +92 327 8223333</a>
+      <div className="footer-brand">
+        <NavLink to="/" className="footer-logo" aria-label="Nexum Global Solutions home">
+          <span className="footer-logo-wordmark"><i aria-hidden="true" /> <span className="footer-logo-n">n</span><span className="footer-logo-exum">exum</span></span>
+          <span className="footer-logo-subtitle">GLOBAL SOLUTIONS</span>
+        </NavLink>
+        <p>We create powerful digital experiences through thoughtful design, smart development, and technology that helps your business grow.</p>
         <div className="footer-socials" aria-label="Nexum Global Solutions social media profiles">
-          <a href="https://www.facebook.com/nexumglobalsolutions/" target="_blank" rel="noreferrer" aria-label="Facebook">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4.2c-.5-.1-2.2-.2-4.1-.2C9 4 6.3 6.4 6.3 10.8V14H2v4.7h4.3V24h5.2v-5.3h4.1L16.3 14h-4.8v-2.8C11.5 9.8 11.9 8 14 8Z"/></svg>
-          </a>
-          <a href="https://www.instagram.com/nexumglobalsolutions/" target="_blank" rel="noreferrer" aria-label="Instagram">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1" className="social-fill"/></svg>
-          </a>
-          <a href="https://www.linkedin.com/company/nexum-global-solutions/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="4" height="12"/><circle cx="5" cy="5" r="2" className="social-fill"/><path d="M11 21V9h4v1.8c1-1.4 2.3-2.2 4-2.2 3 0 4 2 4 5.4v7h-4v-6.2c0-1.6-.5-2.7-1.9-2.7-1.5 0-2.1 1.1-2.1 3.1V21Z"/></svg>
-          </a>
-          <a href="https://www.youtube.com/@NexumGlobalSolutions" target="_blank" rel="noreferrer" aria-label="YouTube">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 8.2a3 3 0 0 0-2.1-2.1C18 5.6 15.4 5.5 12 5.5s-6 .1-7.9.6A3 3 0 0 0 2 8.2c-.5 1.5-.5 3.8-.5 3.8s0 2.3.5 3.8a3 3 0 0 0 2.1 2.1c1.9.5 4.5.6 7.9.6s6-.1 7.9-.6a3 3 0 0 0 2.1-2.1c.5-1.5.5-3.8.5-3.8s0-2.3-.5-3.8Z"/><path d="m10 15.5 6-3.5-6-3.5Z" className="social-play"/></svg>
-          </a>
+          <a href="https://nexumglobal.solutions/" target="_blank" rel="noopener noreferrer" aria-label="Website"><Globe2 size={19} /></a>
+          <a href="https://www.linkedin.com/company/nexum-global-solutions/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="4" height="12"/><circle cx="5" cy="5" r="2"/><path d="M11 21V9h4v1.8c1-1.4 2.3-2.2 4-2.2 3 0 4 2 4 5.4v7h-4v-6.2c0-1.6-.5-2.7-1.9-2.7-1.5 0-2.1 1.1-2.1 3.1V21Z"/></svg></a>
+          <a href="https://www.facebook.com/nexumglobalsolutions/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4.2c-.5-.1-2.2-.2-4.1-.2C9 4 6.3 6.4 6.3 10.8V14H2v4.7h4.3V24h5.2v-5.3h4.1L16.3 14h-4.8v-2.8C11.5 9.8 11.9 8 14 8Z"/></svg></a>
+          <a href="https://www.instagram.com/nexumglobalsolutions/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1"/></svg></a>
+          <a href="https://www.youtube.com/@NexumGlobalSolutions" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 8.2a3 3 0 0 0-2.1-2.1C18 5.6 15.4 5.5 12 5.5s-6 .1-7.9.6A3 3 0 0 0 2 8.2c-.5 1.5-.5 3.8-.5 3.8s0 2.3.5 3.8a3 3 0 0 0 2.1 2.1c1.9.5 4.5.6 7.9.6s6-.1 7.9-.6a3 3 0 0 0 2.1-2.1c.5-1.5.5-3.8.5-3.8s0-2.3-.5-3.8Z"/><path d="m10 15.5 6-3.5-6-3.5Z"/></svg></a>
         </div>
-        <BookButton className="text-link">Book strategy call <ArrowUpRight size={15} /></BookButton>
+      </div>
+      <nav className="footer-column" aria-label="Footer services"><h3>Services</h3>
+        <NavLink to="/services#wordpress">WordPress websites</NavLink>
+        <NavLink to="/services#custom-development">Custom development</NavLink>
+        <NavLink to="/services#ecommerce">E-commerce</NavLink>
+        <NavLink to="/#products">Full catalogue</NavLink>
+      </nav>
+      <nav className="footer-column" aria-label="Footer explore"><h3>Explore</h3>
+        <NavLink to="/services">Services</NavLink>
+        <NavLink to="/services#process">Our Approach</NavLink>
+        <NavLink to="/services#industries">Industries</NavLink>
+        <NavLink to="/contact">Contact</NavLink>
+      </nav>
+      <div className="footer-column"><h3>Let's connect</h3>
+        <NavLink to="/contact">Contact</NavLink>
+        <BookButton className="footer-link-button">Book a call</BookButton>
+        <a href="mailto:info@nexumglobal.solutions">info@nexumglobal.solutions</a>
+        <a href="tel:+923278223333">+92 327 8223333</a>
       </div>
     </div>
-    <div className="footer-bottom"><span>© 2026 Nexum Global Solutions. All rights reserved.</span><span>Strategy · Creative · Technology</span></div>
+    <div className="footer-bottom"><span>© 2026 Nexum Global Solutions</span><nav aria-label="Legal links"><NavLink to="/privacy">Privacy Policy</NavLink><NavLink to="/terms">Terms of Service</NavLink></nav></div>
   </footer>
 }
 
@@ -214,6 +223,36 @@ function ContactForm() {
   </form>
 }
 
+function ContactSection() {
+  return <section className="section contact-section" id="contact">
+    <Reveal><div><p className="eyebrow">CONTACT NEXUM</p><h2>What could your next stage of growth look like?</h2><p>Tell us where you are today. In a focused 30-minute call, we’ll identify the clearest opportunity and outline the first steps.</p></div></Reveal>
+    <Reveal delay={100}><div className="contact-card"><span>NO GENERIC SALES PITCH</span><h3>A practical strategy conversation.</h3><ul><li><CheckCircle2 size={17}/>Clarify your highest-leverage goal</li><li><CheckCircle2 size={17}/>Explore the right channels or systems</li><li><CheckCircle2 size={17}/>Leave with a clear next step</li></ul><BookButton /></div></Reveal>
+    <Reveal className="contact-form-wrap"><ContactForm /></Reveal>
+  </section>
+}
+
+function ContactPage() {
+  return <><section className="section legal-intro"><p className="eyebrow">LET'S CONNECT</p><h1>Tell us what you want to build.</h1><p className="lede">Share your goals and we’ll help you find a clear next step.</p></section><ContactSection /></>
+}
+
+function PrivacyPage() {
+  return <section className="section legal-page"><p className="eyebrow">NEXUM GLOBAL SOLUTIONS</p><h1>Privacy Policy</h1><div className="legal-content">
+    <h2>Information you share</h2><p>When you send an inquiry through this website, we receive the details you enter: your name, email address, optional phone number and company, service interest, and message.</p>
+    <h2>How we use it</h2><p>We use inquiry details to respond to your request and discuss the services you asked about. If you book a call, scheduling takes place through Calendly, which handles the information you provide there under its own privacy practices.</p>
+    <h2>External links</h2><p>Our social media and website links lead to external services with their own privacy practices.</p>
+    <h2>Questions and requests</h2><p>To ask about information you sent through this website, email <a href="mailto:info@nexumglobal.solutions">info@nexumglobal.solutions</a> or use our <NavLink to="/contact">contact page</NavLink>.</p>
+  </div></section>
+}
+
+function TermsPage() {
+  return <section className="section legal-page"><p className="eyebrow">NEXUM GLOBAL SOLUTIONS</p><h1>Terms of Service</h1><div className="legal-content">
+    <h2>Using this website</h2><p>This website describes Nexum Global Solutions and its services. You may use it to learn about our work, contact us, and request a consultation.</p>
+    <h2>Service engagements</h2><p>Website content and starting prices are informational. Any project scope, deliverables, timeline, fees, and other service terms are agreed separately in a written proposal or agreement.</p>
+    <h2>Content and external services</h2><p>Site content may change as our offerings evolve. Booking a call uses Calendly, and links to social platforms lead to external services governed by their own terms.</p>
+    <h2>Questions</h2><p>For questions about this website or a potential engagement, email <a href="mailto:info@nexumglobal.solutions">info@nexumglobal.solutions</a> or use our <NavLink to="/contact">contact page</NavLink>.</p>
+  </div></section>
+}
+
 function Home() {
   return <>
     <section className="hero section-wide">
@@ -233,11 +272,7 @@ function Home() {
     <section className="section impact-strip">
       {[['01','Find demand','Be present when buyers are actively searching.'],['02','Create preference','Build a brand people recognize and trust.'],['03','Convert intent','Remove friction from the path to action.'],['04','Scale intelligently','Use data and automation to compound growth.']].map(([n,t,c], i)=><Reveal as="article" delay={i*70} key={t}><span>{n}</span><h3>{t}</h3><p>{c}</p></Reveal>)}
     </section>
-    <section className="section contact-section" id="contact">
-      <Reveal><div><p className="eyebrow">CONTACT NEXUM</p><h2>What could your next stage of growth look like?</h2><p>Tell us where you are today. In a focused 30-minute call, we’ll identify the clearest opportunity and outline the first steps.</p></div></Reveal>
-      <Reveal delay={100}><div className="contact-card"><span>NO GENERIC SALES PITCH</span><h3>A practical strategy conversation.</h3><ul><li><CheckCircle2 size={17}/>Clarify your highest-leverage goal</li><li><CheckCircle2 size={17}/>Explore the right channels or systems</li><li><CheckCircle2 size={17}/>Leave with a clear next step</li></ul><BookButton /></div></Reveal>
-      <Reveal className="contact-form-wrap"><ContactForm /></Reveal>
-    </section>
+    <ContactSection />
   </>
 }
 
@@ -262,7 +297,13 @@ function Services() {
     <section className="page-hero section-wide"><Reveal><p className="signal"><i /> INTEGRATED GROWTH SERVICES</p><h1>Transform your brand. <span>Scale your revenue.</span></h1><p className="lede">We combine digital strategy, performance media, social creativity, and measurement into one accountable growth partnership.</p><div className="hero-actions"><BookButton/><a href="#capabilities" className="button secondary">See our capabilities <ArrowUpRight size={17}/></a></div></Reveal><Reveal delay={120}><div className="hero-side-note"><Globe2 size={28}/><span>CONNECTED BY DESIGN</span><p>Search captures intent. Social builds preference. Creative earns attention. Data tells us what to do next.</p></div></Reveal></section>
     <div id="capabilities"><CapabilitySection eyebrow="DIGITAL MARKETING" title="Capture demand. Convert it with precision." copy="A performance foundation engineered to increase visibility, improve acquisition efficiency, and turn more visits into valuable actions." items={digitalServices}/></div>
     <CapabilitySection eyebrow="SOCIAL MEDIA MARKETING" title="Make your brand impossible to ignore." copy="A connected organic, paid, and creative system that turns consistent presence into audience trust and pipeline." items={socialServices} alt/>
-    <section className="section process-section"><Reveal><SectionIntro eyebrow="THE NEXUM PROCESS" title="A clear path from ambition to momentum." copy="Five focused stages keep teams aligned, decisions fast, and every iteration connected to the outcome." /></Reveal><div className="process-roadmap">{process.map(([n,t,c],i)=><Reveal as="article" delay={i*70} key={n}><div><span>{n}</span><i /></div><h3>{t}</h3><p>{c}</p></Reveal>)}</div></section>
+    <section className="section web-services"><Reveal><SectionIntro eyebrow="WEBSITES & DIGITAL PRODUCTS" title="Build a stronger digital foundation." copy="From content-led websites to tailored commerce and business systems, each build is shaped around its users and goals." /></Reveal><div className="three-grid">
+      <article className="capability-card" id="wordpress"><div className="icon-shell"><Globe2 size={22}/></div><h3>WordPress websites</h3><p>Flexible, easy-to-manage websites built for clear content, fast navigation, and conversion.</p></article>
+      <article className="capability-card" id="custom-development"><div className="icon-shell"><Layers3 size={22}/></div><h3>Custom development</h3><p>Purpose-built digital tools and platforms for workflows that need more than a template.</p></article>
+      <article className="capability-card" id="ecommerce"><div className="icon-shell"><Target size={22}/></div><h3>E-commerce</h3><p>Shopping experiences that make it easier for customers to discover, choose, and buy.</p></article>
+    </div></section>
+    <section className="section industries-section" id="industries"><Reveal><SectionIntro eyebrow="WHO WE HELP" title="Solutions for teams at every stage." copy="We tailor the strategy and technology to the work in front of you, whether you are launching, growing, or improving complex operations." /></Reveal></section>
+    <section className="section process-section" id="process"><Reveal><SectionIntro eyebrow="THE NEXUM PROCESS" title="A clear path from ambition to momentum." copy="Five focused stages keep teams aligned, decisions fast, and every iteration connected to the outcome." /></Reveal><div className="process-roadmap">{process.map(([n,t,c],i)=><Reveal as="article" delay={i*70} key={n}><div><span>{n}</span><i /></div><h3>{t}</h3><p>{c}</p></Reveal>)}</div></section>
     <CTA eyebrow="YOUR NEXT MOVE STARTS HERE" title="Let’s find the fastest route to meaningful growth." copy="Book an exploratory strategy call. We’ll discuss your goals, current challenges, and where Nexum can create the greatest impact." />
   </>
 }
@@ -302,5 +343,5 @@ export default function NexumApp() {
   const [bookingOpen, setBookingOpen] = useState(false)
   const { pathname } = useLocation()
   const isAdmin = pathname === '/admin'
-  return <BookingContext.Provider value={() => setBookingOpen(true)}>{!isAdmin && <ScrollManager/>}{!isAdmin && <Header/>}<main><Routes><Route path="/admin" element={<Admin/>}/><Route path="/" element={<Home/>}/><Route path="/services" element={<Services/>}/><Route path="/pricing" element={<Pricing/>}/><Route path="*" element={<Home/>}/></Routes></main>{!isAdmin && <Footer/>}{!isAdmin && !bookingOpen && <ScrollToTopButton/>}{!isAdmin && <BookingModal open={bookingOpen} onClose={()=>setBookingOpen(false)}/>}</BookingContext.Provider>
+  return <BookingContext.Provider value={() => setBookingOpen(true)}>{!isAdmin && <ScrollManager/>}{!isAdmin && <Header/>}<main><Routes><Route path="/admin" element={<Admin/>}/><Route path="/" element={<Home/>}/><Route path="/services" element={<Services/>}/><Route path="/pricing" element={<Pricing/>}/><Route path="/contact" element={<ContactPage/>}/><Route path="/privacy" element={<PrivacyPage/>}/><Route path="/terms" element={<TermsPage/>}/><Route path="*" element={<Home/>}/></Routes></main>{!isAdmin && <Footer/>}{!isAdmin && !bookingOpen && <ScrollToTopButton/>}{!isAdmin && <BookingModal open={bookingOpen} onClose={()=>setBookingOpen(false)}/>}</BookingContext.Provider>
 }
