@@ -9,20 +9,14 @@ const channelTabs = [
   ['content', 'Content & Email'],
 ]
 const campaigns = [
-  { id: 'search', icon: '⌕', title: 'Search & Commercial SEO', value: 184, prefix: '+', suffix: '%', metric: 'Organic Pipeline', copy: 'Intent driven rankings & technical fixes' },
-  { id: 'paid', icon: '↗', title: 'Paid Search & Meta Ads', value: 4.2, suffix: 'x', decimal: 1, metric: 'Measured ROAS', copy: 'Conversion tracked ad spend' },
-  { id: 'content', icon: '◎', title: 'Social Content & Community', value: 98, suffix: '%', metric: 'Response SLA', copy: 'Scheduled calendars & active moderation' },
-  { id: 'content', icon: '✉', title: 'Email & Lifecycle Flows', value: 34, suffix: '%', metric: 'Repeat Conversion', copy: 'Automated post visit sequences' },
-]
-const funnel = [
-  { label: 'Search Intent', value: 84, id: 'search' },
-  { label: 'Paid Social', value: 72, id: 'paid' },
-  { label: 'Content Assets', value: 91, id: 'content' },
-  { label: 'Email Sequences', value: 67, id: 'content' },
+  { id: 'search', icon: '⌕', title: 'Search & SEO', value: 284, metric: 'Qualified Leads', copy: 'Commercial search demand entering the pipeline' },
+  { id: 'search', icon: '◎', title: 'Conversion Journey', value: 8.6, suffix: '%', decimal: 1, metric: 'Conversion Rate', copy: 'Tracked visits becoming meaningful inquiries' },
+  { id: 'paid', icon: '↗', title: 'Paid Media', value: 4.2, suffix: 'x', decimal: 1, metric: 'Measured ROAS', copy: 'Revenue attribution across paid campaigns' },
+  { id: 'content', icon: '✉', title: 'Pipeline Growth', value: 8.4, prefix: 'Rs ', suffix: 'm', decimal: 1, metric: 'Pipeline Value', copy: 'Opportunities shaped by connected channels' },
 ]
 const deliverables = [
   ['SEO Technical Audit', 'Live', 'search'],
-  ['Q4 Meta Conversion Campaign', 'Scaling', 'paid'],
+  ['Meta Conversion Campaign', 'Scaling', 'paid'],
   ['Monthly Content Calendar', 'Approved', 'content'],
 ]
 const addOns = [
@@ -88,35 +82,40 @@ function RevealCard({ children, className = '', index = 0 }) {
 export function GrowthShowcase() {
   const [channel, setChannel] = useState('all')
   const [ref, visible] = useInView()
-  const shown = channel === 'all' ? campaigns : campaigns.filter(card => card.id === channel)
+  const ring = {
+    all: ['conic-gradient(#E60016 0 42%, #F97383 42% 70%, #A35AE4 70% 88%, #5A85D5 88% 100%)', '4 channels'],
+    search: ['conic-gradient(#E60016 0 68%, #F97383 68% 82%, #A35AE4 82% 93%, #5A85D5 93% 100%)', '68% search'],
+    paid: ['conic-gradient(#E60016 0 24%, #F97383 24% 72%, #A35AE4 72% 89%, #5A85D5 89% 100%)', '48% paid'],
+    content: ['conic-gradient(#E60016 0 20%, #F97383 20% 44%, #A35AE4 44% 77%, #5A85D5 77% 100%)', '56% content'],
+  }[channel]
   return <div className="growth-studio" ref={ref}>
     <div className="studio-browser">
       <span className="browser-dots" aria-hidden="true"><i/><i/><i/></span>
-      <span>studio.nexum/campaigns</span>
+      <span>studio.nexum/growth</span>
       <strong><i/> LIVE STUDIO PREVIEW</strong>
     </div>
     <div className="studio-inner">
       <div className="studio-heading">
-        <div><span className="eyebrow">NEXUM CAMPAIGN INTELLIGENCE</span><h2>Nexum Growth & Campaign Studio</h2><p>See how connected channels move attention into measurable opportunity.</p></div>
+        <div><span className="eyebrow">NEXUM CAMPAIGN INTELLIGENCE</span><h2>Nexum Campaign & Growth Studio</h2><p>See how connected channels move attention into measurable opportunity.</p></div>
         <span className="studio-period">THIS QUARTER <b>●</b> ACTIVE</span>
       </div>
       <div className="studio-tabs" role="tablist" aria-label="Campaign channels">
         {channelTabs.map(([id, label]) => <button key={id} type="button" role="tab" aria-selected={channel === id} className={channel === id ? 'active' : ''} onClick={() => setChannel(id)}>{label}</button>)}
       </div>
-      <div className="campaign-grid" key={channel}>
-        {shown.map((card, index) => <RevealCard key={card.title} className="campaign-card" index={index}>
+      <div className="campaign-grid kpi-campaign-grid" key={channel}>
+        {campaigns.map((card, index) => <RevealCard key={card.title} className={`campaign-card ${channel !== 'all' && channel !== card.id ? 'muted' : ''}`} index={index}>
           <span className="campaign-icon" aria-hidden="true">{card.icon}</span>
           <h3>{card.title}</h3>
           <div className="campaign-value"><CountMetric value={card.value} prefix={card.prefix} suffix={card.suffix} decimal={card.decimal} active={visible}/><small>{card.metric}</small></div>
           <p>{card.copy}</p>
         </RevealCard>)}
       </div>
-      <div className="studio-split">
-        <section className="studio-panel"><div className="panel-title"><span className="panel-icon" aria-hidden="true">↗</span><h3>Live Attribution & Funnel Velocity</h3></div>
-          <div className="funnel-list">{funnel.map(row => <div className={channel !== 'all' && channel !== row.id ? 'funnel-row muted' : 'funnel-row'} key={row.label}><div><span>{row.label}</span><b>{row.value}%</b></div><div className="funnel-track"><span style={{ width: visible && (channel === 'all' || channel === row.id) ? `${row.value}%` : '0%' }}/></div></div>)}</div>
+      <div className="studio-split studio-attribution-split">
+        <section className="studio-panel"><div className="panel-title"><span className="panel-icon" aria-hidden="true">◎</span><h3>Channel Attribution Breakdown</h3></div>
+          <div className="attribution-content"><div className="attribution-ring" style={{ background: ring[0] }}><div><strong>{ring[1]}</strong><small>attributed mix</small></div></div><div className="attribution-legend"><span><i/>Search Intent</span><span><i/>Paid Social</span><span><i/>Content Assets</span><span><i/>Email Sequences</span></div></div>
         </section>
         <section className="studio-panel"><div className="panel-title"><span className="panel-icon" aria-hidden="true">✓</span><h3>Active Client Deliverables</h3></div>
-          <div className="deliverable-list">{deliverables.map(([name, status, id], index) => <div className={channel !== 'all' && channel !== id ? 'deliverable-row muted' : 'deliverable-row'} style={{ '--reveal-delay': `${index * 90}ms` }} key={name}><span className="deliverable-check">✓</span><span>{name}</span><span className="status-pill"><i/>{status}</span></div>)}</div>
+          <div className="deliverable-list">{deliverables.map(([name, status, id], index) => <div className={channel !== 'all' && channel !== id ? 'deliverable-row muted' : 'deliverable-row'} style={{ '--reveal-delay': `${index * 90}ms` }} key={name}><span className="deliverable-check">✓</span><span>{name}</span><span className="deliverable-dot" aria-hidden="true">·</span><span className="status-pill"><i/>{status}</span></div>)}</div>
         </section>
       </div>
       <p className="studio-disclaimer">Illustrative studio preview. Figures are sample data.</p>
@@ -132,40 +131,6 @@ export function CenteredHero() {
     <div className="hero-actions"><a className="btn primary" href={bookingUrl} target="_blank" rel="noopener noreferrer">Book a Demo →</a><a className="btn outline" href="#services">Explore Services</a></div>
     <div className="trust">{['Conversion tracked spend','Full account ownership','Pipeline focused reporting'].map(item => <span key={item}><b>✓</b>{item}</span>)}</div>
     <GrowthShowcase/>
-  </section>
-}
-
-function ServiceList({ title, items, icon, index, className = '' }) {
-  return <RevealCard className={`service-bento ${className}`} index={index}><div className="bento-title"><span className={`bento-icon ${icon}`} aria-hidden="true">{icon === 'alert' ? '!' : icon === 'growth' ? '↗' : '✓'}</span><h3>{title}</h3></div><ul>{items.map(item => <li key={item}><span className={`list-icon ${icon}`} aria-hidden="true">{icon === 'alert' ? '×' : icon === 'growth' ? '↗' : '✓'}</span>{item.replaceAll('E-commerce', 'Ecommerce')}</li>)}</ul></RevealCard>
-}
-function Tag({ label }) {
-  const [selected, setSelected] = useState(false)
-  return <button type="button" className={selected ? 'tag selected' : 'tag'} aria-pressed={selected} onClick={() => setSelected(value => !value)}>{label.replaceAll('E-commerce', 'Ecommerce')}</button>
-}
-
-export function BentoServices({ data }) {
-  const [active, setActive] = useState('digital')
-  const pillar = data[active]
-  return <section className="section bento-services" id="services">
-    <div className="section-head"><span className="eyebrow">CORE SERVICES</span><h2>Two disciplines. One growth system.</h2><p>Explore what each pillar addresses and delivers for your business.</p></div>
-    <div className={`pillar-switch ${active}`} role="tablist" aria-label="Service pillar">
-      <span className="switch-highlight" aria-hidden="true"/>
-      {Object.entries(data).map(([id, item]) => <button key={id} role="tab" aria-selected={active === id} onClick={() => setActive(id)}><span className="switch-icon" aria-hidden="true">{id === 'digital' ? '↗' : '◎'}</span>{item.name}</button>)}
-    </div>
-    <div className="pillar-view" key={active} role="tabpanel">
-      <div className="pillar-intro"><span className="eyebrow">{pillar.name.toUpperCase()}</span><h3>Built around outcomes, from the first interaction.</h3><p>{pillar.intro}</p></div>
-      <div className="bento-grid">
-        <ServiceList title="The Problem We Solve" items={pillar.problem} icon="alert" index={0}/>
-        <ServiceList title="Scope & What We Deliver" items={pillar.scope} icon="check" index={1}/>
-        <ServiceList title="Key Benefits & What Changes" items={[...pillar.benefits, ...pillar.changes]} icon="growth" index={2}/>
-        <RevealCard className="service-bento bento-tags" index={3}>
-          <div className="bento-title"><span className="bento-icon check" aria-hidden="true">✦</span><h3>Included Deliverables, Tech Stack & Industries</h3></div>
-          <div className="tag-group"><h4>Included Deliverables</h4><div>{pillar.included.map(item => <Tag label={item} key={item}/>)}</div></div>
-          <div className="tag-group"><h4>Tech Stack</h4><div>{pillar.stack.map(item => <Tag label={item} key={item}/>)}</div></div>
-          <div className="tag-group"><h4>Industries Served</h4><div>{pillar.industries.map(item => <Tag label={item} key={item}/>)}</div></div>
-        </RevealCard>
-      </div>
-    </div>
   </section>
 }
 
