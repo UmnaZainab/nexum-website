@@ -160,8 +160,8 @@ export function PricingBuilder({ tiers }) {
   const monthly = selectedPlans.reduce((sum, id) => sum + (amounts[id] || 0), 0) + selectedAddOns.filter(item => item.period === 'month').reduce((sum, item) => sum + item.amount, 0)
   const oneTime = selectedAddOns.filter(item => item.period === 'one time').reduce((sum, item) => sum + item.amount, 0)
   const count = selectedPlans.length + selectedExtras.length
-  return <section className="section pricing-builder" id="pricing">
-    <div className="section-head"><span className="eyebrow">TRANSPARENT STARTING POINTS</span><h2>Choose a plan built for growth.</h2><p>Live PKR plan amounts from our pricing system. Build an estimate before your strategy call.</p></div>
+  return <section className="section pricing pricing-builder" id="pricing">
+    <div className="section-head"><span className="eyebrow">PRICING</span><h2>Clear PKR plans built for measurable growth.</h2><p>Monthly starting amounts update from our live pricing system. Build an estimate before your strategy call.</p></div>
     <div className="pricing-grid">{tiers.map((tier, index) => <RevealCard className={`price-card ${tier.popular ? 'featured' : ''}`} key={tier.id} index={index}>
       <span className="price-icon">{String(index + 1).padStart(2, '0')}</span>{tier.popular && <span className="popular">MOST POPULAR</span>}
       <h3>{tier.name}</h3><p>{tier.copy}</p>
