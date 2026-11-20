@@ -66,3 +66,35 @@
 :root[data-theme="light"] .admin-default-marker,:root[data-theme="light"] .admin-saved{color:#174C75}
 :root[data-theme="light"] .admin-price-save{background:linear-gradient(135deg,#E60016,#CC0000 55%,#8E0C1B);color:#fff}
 :root[data-theme="light"] .admin-error{color:#8E0C1B}
+.admin-page{background:var(--bg);color:var(--text)}
+.admin-brand{display:inline-flex;align-items:center;gap:10px;letter-spacing:0;font-family:Manrope,sans-serif}
+.admin-brand span{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.admin-brand strong{font-size:.93rem;letter-spacing:-.035em;color:var(--text)}
+.admin-brand small{font-size:.53rem;letter-spacing:.14em;color:var(--muted)}
+.admin-dashboard{max-width:1220px;padding-top:34px}
+.admin-dashboard-head{align-items:center;margin-bottom:12px}
+.admin-dashboard-head .admin-brand{margin-bottom:27px}
+.admin-dashboard-head h1{font-size:2.8rem;margin:0 0 6px}
+.admin-dashboard-head p{color:var(--muted)}
+.admin-controls{justify-content:flex-end;gap:8px}
+.admin-controls button{border-radius:10px;background:var(--surface);color:var(--text)}
+.admin-controls .theme-toggle{width:42px;height:42px}
+.admin-session{font-size:.75rem;color:var(--muted);margin-bottom:16px}
+.admin-tabs{display:inline-flex;gap:5px;padding:5px;margin-bottom:22px;border:1px solid var(--line);border-radius:13px;background:var(--surface2)}
+.admin-tabs button{min-width:100px;border-radius:9px;padding:9px 18px;color:var(--muted)}
+.admin-tabs button.active,:root[data-theme="light"] .admin-tabs button.active{background:linear-gradient(135deg,#E60016,#CC0000);color:#fff;box-shadow:0 7px 18px rgba(204,0,0,.24)}
+.admin-tabs button.active:after{display:none}
+.admin-pricing-card,.admin-inquiry,.admin-empty{background:var(--surface);border-radius:18px}
+.admin-pricing-card>p{margin-bottom:10px}
+.admin-card-count{font-size:.78rem;font-weight:800;color:var(--muted);padding:15px 0;border-top:1px solid var(--line)}
+.admin-pricing-table thead,:root[data-theme="light"] .admin-pricing-table thead{background:rgba(204,0,0,.06)}
+.admin-pricing-table thead th{color:var(--red-bright)}
+.admin-amount-input{display:flex;align-items:center;gap:8px}
+.admin-amount-input b{color:var(--text);font-size:.8rem}
+.admin-default-marker{display:inline-block;margin-left:9px;padding:3px 8px;border-radius:999px;background:rgba(22,123,85,.12);color:#16805B;font-size:.6rem}
+.admin-action-card{max-width:450px;margin:0 0 22px;padding:22px;border:1px solid var(--line);border-radius:15px;background:var(--surface)}
+.admin-action-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.admin-action-head h2{font-size:1.2rem}.admin-action-head button{border:0;background:none;color:var(--red-bright);font-weight:800}
+.admin-action-card label{display:block;font-size:.8rem;font-weight:800;margin-bottom:10px}
+.admin-action-card input,.admin-action-card select,.inquiry-actions select{display:block;width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--bg2);color:var(--text)}
+.inquiry-actions{display:flex;align-items:center;gap:8px}.inquiry-actions select{width:auto}
+@media(max-width:760px){.admin-dashboard-head{align-items:flex-start}.admin-controls{justify-content:flex-start}.admin-dashboard-head h1{font-size:2.2rem}.admin-inquiry-head{flex-wrap:wrap}}

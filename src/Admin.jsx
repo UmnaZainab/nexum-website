@@ -5,6 +5,7 @@ import './admin.css'
 
 const endpoint = '/.netlify/functions/admin'
 const pricingEndpoint = '/.netlify/functions/pricing'
+const AdminBrand = () => <a className="admin-brand" href="/"><svg width="38" height="38" viewBox="0 0 38 38" aria-hidden="true"><rect width="38" height="38" rx="10" fill="#CC0000"/><path d="M9 29V9h5.2l9.6 11.4V9H29v20h-5.2L14.2 17.6V29Z" fill="#fff"/></svg><span><strong>Nexum Digital Studio</strong><small>NEXUM GLOBAL SOLUTIONS</small></span></a>
 
 async function adminRequest(method = 'GET', body, path = endpoint) {
   const response = await fetch(path, {
@@ -75,14 +76,15 @@ function PricingEditor({ onUnauthorized }) {
 
   return <section className="admin-pricing-card" aria-labelledby="pricing-title">
     <h2 id="pricing-title">Pricing amounts</h2>
-    <p>Edit the numeric price shown on each pricing page card. Other card content is managed in the site.</p>
+    <p>Edit the numeric price shown on each pricing page card. Other card content is managed in the HTML.</p>
+    <div className="admin-card-count">{pricing.length} pricing cards</div>
     {error && <p className="admin-error" role="alert">{error}</p>}
     <div className="admin-pricing-scroll"><table className="admin-pricing-table">
       <thead><tr><th scope="col">CARD</th><th scope="col">CURRENT AMOUNT</th><th scope="col">DEFAULT</th><th scope="col">SAVE</th></tr></thead>
       <tbody>{pricing.map(item => <tr key={item.id}>
         <th scope="row">{item.cardName}</th>
-        <td><input type="number" min="0" max="1000000000" step="0.01" inputMode="decimal" aria-label={`Current amount for ${item.cardName}`} value={drafts[item.id] ?? ''} onChange={event => { setDrafts(current => ({ ...current, [item.id]: event.target.value })); setSaved('') }} /></td>
-        <td>{formatPrice(item.defaultAmount)}{item.amount === item.defaultAmount && <span className="admin-default-marker">(in use)</span>}</td>
+        <td><span className="admin-amount-input"><b>Rs</b><input type="number" min="0" max="1000000000" step="0.01" inputMode="decimal" aria-label={`Current amount for ${item.cardName}`} value={drafts[item.id] ?? ''} onChange={event => { setDrafts(current => ({ ...current, [item.id]: event.target.value })); setSaved('') }} /></span></td>
+        <td>{formatPrice(item.defaultAmount)}{item.amount === item.defaultAmount && <span className="admin-default-marker">IN USE</span>}</td>
         <td><button type="button" className="admin-price-save" disabled={Boolean(saving)} onClick={() => save(item)}>{saving === item.id ? 'Saving…' : 'Save'}</button>{saved === item.id && <span className="admin-saved" role="status">Saved</span>}</td>
       </tr>)}</tbody>
     </table></div>
@@ -93,7 +95,11 @@ function PricingEditor({ onUnauthorized }) {
 export default function Admin({ theme, setTheme }) {
   const [authorized, setAuthorized] = useState(false)
   const [username, setUsername] = useState('')
-  const [tab, setTab] = useState('inquiries')
+  const [tab, setTab] = useState('pricing')
+  const [role, setRole] = useState('')
+  const [action, setAction] = useState('')
+  const [actionMessage, setActionMessage] = useState('')
+  const [pricingKey, setPricingKey] = useState(0)
   const [items, setItems] = useState([])
   const [search, setSearch] = useState('')
   const [busy, setBusy] = useState(false)
@@ -107,7 +113,7 @@ export default function Admin({ theme, setTheme }) {
   useEffect(() => {
     let active = true
     adminRequest().then(result => {
-      if (active) { setItems(result.items); setUsername(result.user?.username || 'Admin'); setAuthorized(true) }
+      if (active) { setItems(result.items); setUsername(result.user?.username || 'Admin'); setRole(result.user?.role || 'admin'); setAuthorized(true) }
     }).catch(failure => {
       if (active && failure.status !== 401) setError(failure.message)
     })
@@ -134,6 +140,7 @@ export default function Admin({ theme, setTheme }) {
       form.reset()
       setItems(result.items)
       setUsername(result.user?.username || 'Admin')
+      setRole(result.user?.role || 'admin')
       setAuthorized(true)
     } catch (failure) {
       setError(failure.message)
@@ -148,11 +155,43 @@ export default function Admin({ theme, setTheme }) {
     try {
       const result = await adminRequest()
       setItems(result.items)
+      setPricingKey(value => value + 1)
     } catch (failure) {
       if (failure.status === 401) handleUnauthorized()
       setError(failure.message)
     } finally {
       setBusy(false)
+    }
+  }
+
+  async function saveAction(event) {
+    event.preventDefault()
+    const form = event.currentTarget
+    const data = Object.fromEntries(new FormData(form))
+    setBusy(true)
+    setError('')
+    setActionMessage('')
+    try {
+      const result = await adminRequest('POST', {
+        action: action === 'password' ? 'change_password' : 'add_user',
+        ...data,
+      })
+      setAction('')
+      setActionMessage(result.detail || 'Saved.')
+      if (action === 'password') handleUnauthorized()
+    } catch (failure) {
+      if (failure.status === 401) handleUnauthorized()
+      setError(failure.message)
+    } finally { setBusy(false) }
+  }
+
+  async function setInquiryStatus(item, status) {
+    try {
+      await adminRequest('POST', { action: 'set_status', id: item.id, status })
+      setItems(current => current.map(entry => entry.id === item.id ? { ...entry, status } : entry))
+    } catch (failure) {
+      if (failure.status === 401) handleUnauthorized()
+      else setError(failure.message)
     }
   }
 
@@ -190,7 +229,7 @@ export default function Admin({ theme, setTheme }) {
 
   return <div className="admin-page">
     {!authorized ? <div className="admin-login-shell"><form className="admin-login-card" onSubmit={login}>
-      <div className="admin-login-top"><a className="admin-brand" href="/">nexum<span>.</span> <small>DIGITAL STUDIO</small></a><ThemeToggle theme={theme} setTheme={setTheme} /></div>
+      <div className="admin-login-top"><AdminBrand/><ThemeToggle theme={theme} setTheme={setTheme} /></div>
       <p className="admin-eyebrow">PRIVATE DASHBOARD</p>
       <h1>Admin sign in</h1>
       <p>Enter your credentials to manage inquiries and pricing.</p>
@@ -200,18 +239,21 @@ export default function Admin({ theme, setTheme }) {
       {error && <p className="admin-error" role="alert">{error}</p>}
     </form></div> : <div className="admin-dashboard">
       <header className="admin-dashboard-head">
-        <div><a className="admin-brand" href="/">nexum<span>.</span> <small>DIGITAL STUDIO</small></a><p className="admin-eyebrow">PRIVATE DASHBOARD</p><h1>{tab === 'inquiries' ? 'Website inquiries' : 'Pricing management'}</h1><p>{tab === 'inquiries' ? 'Contact form submissions, newest first.' : 'Manage the amounts shown on the public pricing page.'}</p></div>
-        <div className="admin-controls"><span className="admin-user-badge">Signed in: {username}</span><ThemeToggle theme={theme} setTheme={setTheme} /><button type="button" onClick={logout} disabled={busy}>Log out</button></div>
+        <div><AdminBrand/><h1>{tab === 'inquiries' ? 'Inquiries' : 'Pricing'}</h1><p>{tab === 'inquiries' ? 'Contact form submissions, newest first.' : 'Live amounts shown on Nexum Digital Studio pricing cards.'}</p></div>
+        <div className="admin-controls"><ThemeToggle theme={theme} setTheme={setTheme} /><button type="button" onClick={refresh} disabled={busy}>Refresh</button><button type="button" onClick={() => {setAction('password');setError('')}}>Change Password</button>{role === 'super_admin' && <button type="button" onClick={() => {setAction('user');setError('')}}>Add New User</button>}<button type="button" onClick={logout} disabled={busy}>Logout</button></div>
       </header>
+      <div className="admin-session">Signed in as {username}</div>
+      {actionMessage && <p className="admin-saved" role="status">{actionMessage}</p>}
+      {action && <form className="admin-action-card" onSubmit={saveAction}><div className="admin-action-head"><h2>{action === 'password' ? 'Change Password' : 'Add New User'}</h2><button type="button" onClick={() => setAction('')}>Close</button></div>{action === 'password' ? <><label>Current password<input name="currentPassword" type="password" autoComplete="current-password" required/></label><label>New password<input name="newPassword" type="password" autoComplete="new-password" minLength="12" required/></label></> : <><label>Username<input name="username" minLength="3" maxLength="50" required/></label><label>Password<input name="password" type="password" minLength="12" required/></label><label>Role<select name="role"><option value="admin">Admin</option><option value="super_admin">Super admin</option></select></label></>}<button className="admin-primary" type="submit" disabled={busy}>Save</button>{error && <p className="admin-error" role="alert">{error}</p>}</form>}
       <nav className="admin-tabs" aria-label="Admin sections"><button type="button" className={tab === 'inquiries' ? 'active' : ''} aria-current={tab === 'inquiries' ? 'page' : undefined} onClick={() => { setTab('inquiries'); setError('') }}>Inquiries</button><button type="button" className={tab === 'pricing' ? 'active' : ''} aria-current={tab === 'pricing' ? 'page' : undefined} onClick={() => { setTab('pricing'); setError('') }}>Pricing</button></nav>
-      {tab === 'pricing' ? <PricingEditor onUnauthorized={handleUnauthorized} /> : <>
+      {tab === 'pricing' ? <PricingEditor key={pricingKey} onUnauthorized={handleUnauthorized} /> : <>
       <div className="admin-toolbar"><label>Search inquiries<input type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="Name, email, message, service…" /></label><span>{visible.length} of {items.length} inquiries <button type="button" onClick={refresh} disabled={busy}>Refresh</button></span></div>
       {error && <p className="admin-error" role="alert">{error}</p>}
       {visible.length === 0 ? <div className="admin-empty">{items.length ? 'No inquiries match your search.' : 'No inquiries yet.'}</div> : <div className="admin-inquiry-list">
         {visible.map(item => <article className="admin-inquiry" key={item.id}>
-          <div className="admin-inquiry-head"><div><h2>{item.name || 'Unnamed inquiry'}</h2><time dateTime={item.createdAt || undefined}>{formatDate(item.createdAt)}</time></div><button type="button" className="admin-delete" onClick={() => remove(item)} disabled={busy} aria-label={`Delete inquiry from ${item.name || item.email}`}>Delete</button></div>
-          <dl className="admin-fields"><div><dt>Email</dt><dd>{item.email ? <a href={`mailto:${item.email}`}>{item.email}</a> : '—'}</dd></div><div><dt>Phone</dt><dd>{item.phone || '—'}</dd></div><div><dt>Company</dt><dd>{item.company || '—'}</dd></div><div><dt>Service</dt><dd>{item.service || '—'}</dd></div><div><dt>Page source</dt><dd>{item.pageSource || '—'}</dd></div></dl>
-          <div className="admin-message"><strong>Message</strong><p>{item.message || '—'}</p></div>
+          <div className="admin-inquiry-head"><div><h2>{item.name || 'Unnamed inquiry'}</h2><time dateTime={item.createdAt || undefined}>{formatDate(item.createdAt)}</time></div><div className="inquiry-actions"><select aria-label={`Status for ${item.name || item.email}`} value={item.status || 'new'} onChange={event => setInquiryStatus(item,event.target.value)}><option value="new">New</option><option value="in_progress">In progress</option><option value="resolved">Resolved</option></select><button type="button" className="admin-delete" onClick={() => remove(item)} disabled={busy} aria-label={`Delete inquiry from ${item.name || item.email}`}>Delete</button></div></div>
+          <dl className="admin-fields"><div><dt>Email</dt><dd>{item.email ? <a href={`mailto:${item.email}`}>{item.email}</a> : 'None'}</dd></div><div><dt>Phone</dt><dd>{item.phone || 'None'}</dd></div><div><dt>Company</dt><dd>{item.company || 'None'}</dd></div><div><dt>Service</dt><dd>{item.service || 'None'}</dd></div><div><dt>Page source</dt><dd>{item.pageSource || 'None'}</dd></div></dl>
+          <div className="admin-message"><strong>Message</strong><p>{item.message || 'None'}</p></div>
         </article>)}
       </div>}</>}
     </div>}

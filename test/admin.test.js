@@ -69,6 +69,23 @@ test('MongoDB admin user can sign in, read inquiries, and delete one', async () 
   assert.equal((await request('POST', { action: 'logout' }, cookie)).statusCode, 200)
 })
 
+test('authenticated admin actions enforce roles and update inquiry status', async () => {
+  user.session_version = 'actions-version'
+  user.role = 'admin'
+  collections.nexum_website_inquiries.updateOne = async ({ _id }, { $set }) => {
+    assert.equal(_id.toString(), inquiry._id.toString())
+    inquiry.status = $set.status
+    return { matchedCount: 1 }
+  }
+  const login = await request('POST', { action: 'login', user: user.username, pass: 'test-password-123' })
+  const cookie = login.headers['Set-Cookie'].split(';')[0]
+  assert.equal((await request('POST', { action: 'add_user', username: 'new-admin', password: 'long-password-123', role: 'admin' }, cookie)).statusCode, 403)
+  assert.equal((await request('POST', { action: 'change_password', currentPassword: 'wrong', newPassword: 'long-password-123' }, cookie)).statusCode, 400)
+  assert.equal((await request('POST', { action: 'set_status', id: inquiry._id.toString(), status: 'resolved' }, cookie)).statusCode, 200)
+  assert.equal(inquiry.status, 'resolved')
+  assert.equal((await request('POST', { action: 'set_status', id: inquiry._id.toString(), status: 'invalid' }, cookie)).statusCode, 400)
+})
+
 const pricingUser = { ...user, session_version: 'pricing-version' }
 const pricingRows = new Map()
 const pricingDb = {

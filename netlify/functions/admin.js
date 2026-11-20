@@ -1,4 +1,4 @@
-import { createHash, createHmac, timingSafeEqual } from 'node:crypto'
+import { createHash, createHmac, randomUUID, timingSafeEqual } from 'node:crypto'
 import { MongoClient, ObjectId } from 'mongodb'
 import bcrypt from 'bcryptjs'
 
@@ -112,6 +112,51 @@ export function createAdminHandler(database = getDb) {
       if (data?.action === 'logout') {
         return respond(200, { ok: true }, { 'Set-Cookie': `${cookieName}=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax; Secure` })
       }
+      if (['change_password', 'add_user', 'set_status'].includes(data?.action)) {
+        if (!getSession(event, settings)) return respond(401, { ok: false, detail: 'Authentication required.' })
+        try {
+          const db = await database(settings)
+          const signedInUser = await authenticatedUser(event, db, settings)
+          if (!signedInUser) return respond(401, { ok: false, detail: 'Authentication required.' })
+          if (data.action === 'change_password') {
+            if (typeof data.currentPassword !== 'string' || !verifyPassword(data.currentPassword, signedInUser.password_hash) ||
+                typeof data.newPassword !== 'string' || data.newPassword.length < 12 || data.newPassword.length > 200) {
+              return respond(400, { ok: false, detail: 'Check your current password and use a new password with at least 12 characters.' })
+            }
+            await db.collection('admin_users').updateOne({ username: signedInUser.username }, {
+              $set: { password_hash: await bcrypt.hash(data.newPassword, 12), session_version: randomUUID() },
+            })
+            return respond(200, { ok: true, detail: 'Password changed. Please sign in again.' }, {
+              'Set-Cookie': `${cookieName}=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax; Secure`,
+            })
+          }
+          if (data.action === 'add_user') {
+            if (signedInUser.role !== 'super_admin') return respond(403, { ok: false, detail: 'Only a super admin can add users.' })
+            const username = normalizeUsername(data.username)
+            if (!/^[a-z0-9.-]{3,50}$/.test(username) || typeof data.password !== 'string' ||
+                data.password.length < 12 || data.password.length > 200 ||
+                !['admin', 'super_admin'].includes(data.role)) {
+              return respond(400, { ok: false, detail: 'Use a valid username, role, and password with at least 12 characters.' })
+            }
+            if (await db.collection('admin_users').findOne({ username })) return respond(409, { ok: false, detail: 'Username already exists.' })
+            await db.collection('admin_users').insertOne({
+              username, password_hash: await bcrypt.hash(data.password, 12),
+              session_version: randomUUID(), status: 'active', role: data.role, createdAt: new Date(),
+            })
+            return respond(200, { ok: true, detail: 'User added.' })
+          }
+          if (!/^[a-f\d]{24}$/i.test(data.id || '') || !['new', 'in_progress', 'resolved'].includes(data.status)) {
+            return respond(400, { ok: false, detail: 'Invalid inquiry status.' })
+          }
+          const result = await db.collection('nexum_website_inquiries').updateOne(
+            { _id: new ObjectId(data.id) }, { $set: { status: data.status } },
+          )
+          return result.matchedCount ? respond(200, { ok: true }) : respond(404, { ok: false, detail: 'Inquiry not found.' })
+        } catch (error) {
+          console.error('[admin] action failed:', error?.message)
+          return respond(500, { ok: false, detail: 'Could not complete the admin request.' })
+        }
+      }
       if (data?.action !== 'login' || typeof data.user !== 'string' || typeof data.pass !== 'string') {
         return respond(400, { ok: false, detail: 'Invalid request.' })
       }
@@ -156,12 +201,12 @@ export function createAdminHandler(database = getDb) {
       const collection = db.collection('nexum_website_inquiries')
       if (event.httpMethod === 'GET') {
         const docs = await collection.find({}).sort({ createdAt: -1, _id: -1 }).toArray()
-        const items = docs.map(({ _id, name, email, phone, company, service, message, pageSource, createdAt }) => ({
+        const items = docs.map(({ _id, name, email, phone, company, service, message, pageSource, createdAt, status }) => ({
           id: _id.toString(), name: name || '', email: email || '', phone: phone || '',
           company: company || '', service: service || '', message: message || '',
-          pageSource: pageSource || '', createdAt: createdAt instanceof Date ? createdAt.toISOString() : createdAt || null,
+          pageSource: pageSource || '', status: status || 'new', createdAt: createdAt instanceof Date ? createdAt.toISOString() : createdAt || null,
         }))
-        return respond(200, { ok: true, items, user: { username: signedInUser.username } })
+        return respond(200, { ok: true, items, user: { username: signedInUser.username, role: signedInUser.role } })
       }
       const result = await collection.deleteOne({ _id: deleteId })
       if (!result.deletedCount) return respond(404, { ok: false, detail: 'Inquiry not found.' })
