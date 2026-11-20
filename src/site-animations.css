@@ -1,0 +1,71 @@
+/* Scroll entrance */
+.site-reveal{opacity:0;transform:translateY(20px);transition:opacity .65s cubic-bezier(.2,.8,.2,1) var(--site-delay,0ms),transform .65s cubic-bezier(.2,.8,.2,1) var(--site-delay,0ms)}
+.site-reveal.site-visible{opacity:1;transform:none}
+.site-reveal.site-visible:hover{transition-duration:.25s}
+
+/* Hero entrance and button sheen */
+@keyframes hero-enter{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.centered-hero>.hero-badge{animation:hero-enter .55s ease both}
+.centered-hero>h1{animation:hero-enter .62s ease .09s both}
+.centered-hero>p{animation:hero-enter .62s ease .18s both}
+.centered-hero>.hero-actions{animation:hero-enter .62s ease .27s both}
+.centered-hero>.trust{animation:hero-enter .62s ease .36s both}
+.centered-hero>.growth-studio{animation:hero-enter .7s ease .45s both}
+.btn.primary{position:relative;isolation:isolate;overflow:hidden}
+.btn.primary:after{content:'';position:absolute;inset:-50% auto -50% -50%;width:45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.27),transparent);transform:skewX(-20deg) translateX(-150%);transition:transform .55s ease;pointer-events:none}
+.btn.primary:hover:after{transform:skewX(-20deg) translateX(600%)}
+
+/* Attribution movement */
+.attribution-bars{display:grid;gap:9px;margin-top:12px;padding-top:13px;border-top:1px solid var(--line)}
+.attribution-bar{transition:opacity .3s}
+.attribution-bar.muted{opacity:.35}
+.attribution-bar>div:first-child{display:flex;justify-content:space-between;gap:10px;margin-bottom:4px;color:var(--muted);font-size:.69rem;font-weight:700}
+.attribution-bar b{color:var(--red-bright)}
+.attribution-track{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.attribution-track>span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#8E0C1B,#E60016);transition:width .85s cubic-bezier(.2,.8,.2,1)}
+.status-pill i{animation:status-breathe 1.8s ease-in-out infinite}
+@keyframes status-breathe{50%{opacity:.45;transform:scale(.72)}}
+
+/* Growth engine pulse and popovers */
+.growth-core{isolation:isolate}
+.growth-core:before{content:'';position:absolute;inset:-14px;border:1px solid rgba(230,0,22,.33);border-radius:50%;z-index:-1;animation:core-pulse 3.8s ease-out infinite}
+@keyframes core-pulse{0%{opacity:.65;transform:scale(.94)}65%{opacity:0;transform:scale(1.18)}100%{opacity:0;transform:scale(1.18)}}
+.architecture-lines path{animation-duration:5.5s}
+.channel-popover{transform:translate(-50%,14px) scale(.94);transition:opacity .24s ease,transform .42s cubic-bezier(.17,1.45,.4,1),visibility .24s}
+.architecture-node.active .channel-popover{transform:translate(-50%,0) scale(1)}
+
+/* Tactile cards and badges */
+.suite-card,.playbook-card,.process-grid>article,.monthly-rhythm article,.price-card,.booster-card{transition:transform .26s ease,border-color .26s ease,box-shadow .26s ease,opacity .55s ease}
+.suite-card:hover,.playbook-card:hover,.process-grid>article:hover,.monthly-rhythm article:hover,.price-card:hover,.booster-card:hover{transform:translateY(-5px);border-color:rgba(230,0,22,.5);box-shadow:0 18px 38px var(--shadow)}
+.suite-icon,.channel-icon,.price-icon,.booster-icon,.campaign-icon{transition:transform .26s ease,box-shadow .26s ease}
+.suite-card:hover .suite-icon,.architecture-node:hover .channel-icon,.price-card:hover .price-icon,.booster-card:hover .booster-icon,.campaign-card:hover .campaign-icon{transform:scale(1.09);box-shadow:0 6px 18px rgba(204,0,0,.18)}
+.process-grid>article{border:1px solid #344157}
+.process-grid>article:hover{border-color:#E60016;box-shadow:0 16px 30px rgba(0,0,0,.22)}
+.price-card.featured{animation:featured-glow 4s ease-in-out infinite}
+@keyframes featured-glow{50%{box-shadow:0 16px 46px rgba(204,0,0,.26),0 0 0 2px rgba(230,0,22,.16)}}
+.pricing .btn,.booster-card button{transition:transform .18s ease,background .22s ease,border-color .22s ease,box-shadow .22s ease}
+.pricing .btn:active,.booster-card button:active{transform:translateY(1px) scale(.97)}
+.pricing [aria-pressed="true"]{box-shadow:0 0 0 2px rgba(204,0,0,.17)}
+.suite-card.depth-reveal,.playbook-card.depth-reveal{transition:opacity .6s ease var(--depth-delay),transform .6s ease var(--depth-delay),border-color .26s ease,box-shadow .26s ease}
+.suite-card.depth-reveal.is-visible,.playbook-card.depth-reveal.is-visible{transition:transform .26s ease,border-color .26s ease,box-shadow .26s ease}
+.price-card.reveal-card,.booster-card.reveal-card{transition:opacity .55s ease var(--reveal-delay),transform .55s ease var(--reveal-delay),border-color .26s ease,box-shadow .26s ease}
+.price-card.reveal-card.is-visible,.booster-card.reveal-card.is-visible{transition:transform .26s ease,border-color .26s ease,box-shadow .26s ease}
+.process-grid>article.site-reveal,.monthly-rhythm article.site-reveal{transition:opacity .65s ease var(--site-delay,0ms),transform .65s ease var(--site-delay,0ms),border-color .26s ease,box-shadow .26s ease}
+.process-grid>article.site-reveal.site-visible,.monthly-rhythm article.site-reveal.site-visible{transition:transform .26s ease,border-color .26s ease,box-shadow .26s ease}
+@keyframes summary-rise{from{opacity:0;transform:translate(-50%,24px)}to{opacity:1;transform:translate(-50%,0)}}
+.combined-summary{animation:summary-rise .4s cubic-bezier(.2,.8,.2,1) both}
+
+/* FAQ accordion */
+.faq-indicator{position:relative;display:block;width:22px;height:22px;flex:none;transform:rotate(0);transition:transform .28s ease}
+.faq-indicator i{position:absolute;left:3px;top:10px;width:16px;height:2px;border-radius:2px;background:var(--red-bright);transition:transform .28s ease}
+.faq-indicator i:last-child{transform:rotate(90deg)}
+.faq-list button[aria-expanded="true"] .faq-indicator{transform:rotate(90deg)}
+.faq-list button[aria-expanded="true"] .faq-indicator i:last-child{transform:rotate(90deg) scaleX(0)}
+.faq-panel{transition:grid-template-rows .35s cubic-bezier(.2,.8,.2,1),opacity .35s ease}
+
+@media(prefers-reduced-motion:reduce){
+  .site-reveal,.site-reveal.site-visible{opacity:1;transform:none;transition:none}
+  .centered-hero>.hero-badge,.centered-hero>h1,.centered-hero>p,.centered-hero>.hero-actions,.centered-hero>.trust,.centered-hero>.growth-studio,
+  .growth-core:before,.architecture-lines path,.status-pill i,.price-card.featured,.combined-summary{animation:none}
+  .attribution-track>span,.channel-popover,.faq-panel,.faq-indicator,.faq-indicator i{transition:none}
+}

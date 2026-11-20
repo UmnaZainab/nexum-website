@@ -39,11 +39,13 @@ function Reveal({ children, className = '', delay = 0 }) {
   useEffect(() => {
     const node = ref.current
     if (!node || !('IntersectionObserver' in window)) { node?.classList.add('is-visible'); return }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { node.classList.add('is-visible'); return }
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) { node.classList.add('is-visible'); observer.disconnect() }
     }, { threshold: 0.08 })
     observer.observe(node)
-    return () => observer.disconnect()
+    const fallback = window.setTimeout(() => node.classList.add('is-visible'), 5000)
+    return () => { observer.disconnect(); window.clearTimeout(fallback) }
   }, [])
   return <div ref={ref} className={`depth-reveal ${className}`} style={{ '--depth-delay': `${delay}ms` }}>{children}</div>
 }

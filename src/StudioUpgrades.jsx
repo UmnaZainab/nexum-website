@@ -19,6 +19,12 @@ const deliverables = [
   ['Meta Conversion Campaign', 'Scaling', 'paid'],
   ['Monthly Content Calendar', 'Approved', 'content'],
 ]
+const attributionBars = [
+  ['Search Intent', 68, 'search'],
+  ['Paid Social', 48, 'paid'],
+  ['Content Assets', 56, 'content'],
+  ['Email Sequences', 34, 'content'],
+]
 const addOns = [
   { id: 'seo-audit', name: 'Technical SEO Audit & Fixes', amount: 18000, period: 'one time', icon: '⌕' },
   { id: 'ads-setup', name: 'Google & Meta Ads Setup', amount: 22000, period: 'one time', icon: '↗' },
@@ -46,11 +52,13 @@ function useInView() {
     const node = ref.current
     if (!node) return
     if (!('IntersectionObserver' in window)) { setVisible(true); return }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setVisible(true); return }
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) { setVisible(true); observer.disconnect() }
     }, { threshold: 0.12 })
     observer.observe(node)
-    return () => observer.disconnect()
+    const fallback = window.setTimeout(() => setVisible(true), 5000)
+    return () => { observer.disconnect(); window.clearTimeout(fallback) }
   }, [])
   return [ref, visible]
 }
@@ -81,7 +89,16 @@ function RevealCard({ children, className = '', index = 0 }) {
 
 export function GrowthShowcase() {
   const [channel, setChannel] = useState('all')
+  const [barsReady, setBarsReady] = useState(false)
   const [ref, visible] = useInView()
+  useEffect(() => {
+    setBarsReady(false)
+    if (!visible) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setBarsReady(true); return }
+    let secondFrame
+    const firstFrame = requestAnimationFrame(() => { secondFrame = requestAnimationFrame(() => setBarsReady(true)) })
+    return () => { cancelAnimationFrame(firstFrame); if (secondFrame) cancelAnimationFrame(secondFrame) }
+  }, [channel, visible])
   const ring = {
     all: ['conic-gradient(#E60016 0 42%, #F97383 42% 70%, #A35AE4 70% 88%, #5A85D5 88% 100%)', '4 channels'],
     search: ['conic-gradient(#E60016 0 68%, #F97383 68% 82%, #A35AE4 82% 93%, #5A85D5 93% 100%)', '68% search'],
@@ -113,6 +130,7 @@ export function GrowthShowcase() {
       <div className="studio-split studio-attribution-split">
         <section className="studio-panel"><div className="panel-title"><span className="panel-icon" aria-hidden="true">◎</span><h3>Channel Attribution Breakdown</h3></div>
           <div className="attribution-content"><div className="attribution-ring" style={{ background: ring[0] }}><div><strong>{ring[1]}</strong><small>attributed mix</small></div></div><div className="attribution-legend"><span><i/>Search Intent</span><span><i/>Paid Social</span><span><i/>Content Assets</span><span><i/>Email Sequences</span></div></div>
+          <div className="attribution-bars">{attributionBars.map(([label, amount, id]) => <div className={channel !== 'all' && channel !== id ? 'attribution-bar muted' : 'attribution-bar'} key={label}><div><span>{label}</span><b>{amount}%</b></div><div className="attribution-track"><span style={{ width: barsReady && (channel === 'all' || channel === id) ? `${amount}%` : '0%' }}/></div></div>)}</div>
         </section>
         <section className="studio-panel"><div className="panel-title"><span className="panel-icon" aria-hidden="true">✓</span><h3>Active Client Deliverables</h3></div>
           <div className="deliverable-list">{deliverables.map(([name, status, id], index) => <div className={channel !== 'all' && channel !== id ? 'deliverable-row muted' : 'deliverable-row'} style={{ '--reveal-delay': `${index * 90}ms` }} key={name}><span className="deliverable-check">✓</span><span>{name}</span><span className="deliverable-dot" aria-hidden="true">·</span><span className="status-pill"><i/>{status}</span></div>)}</div>
@@ -182,6 +200,6 @@ export function PricingBuilder({ tiers }) {
 export function MultiOpenFAQ() {
   const [open, setOpen] = useState([])
   return <section className="section faq" id="faq"><div className="section-head"><span className="eyebrow">FREQUENTLY ASKED QUESTIONS</span><h2>Answers before we begin.</h2></div><div className="faq-list">
-    {detailedFaqs.map(([question, answer], index) => <article key={question}><button type="button" aria-expanded={open.includes(index)} aria-controls={`faq-answer-${index}`} onClick={() => setOpen(current => current.includes(index) ? current.filter(value => value !== index) : [...current, index])}>{question}<b aria-hidden="true">{open.includes(index) ? '−' : '+'}</b></button><div id={`faq-answer-${index}`} className={open.includes(index) ? 'faq-panel open' : 'faq-panel'}><p>{answer}</p></div></article>)}
+    {detailedFaqs.map(([question, answer], index) => <article key={question}><button type="button" aria-expanded={open.includes(index)} aria-controls={`faq-answer-${index}`} onClick={() => setOpen(current => current.includes(index) ? current.filter(value => value !== index) : [...current, index])}>{question}<b className="faq-indicator" aria-hidden="true"><i/><i/></b></button><div id={`faq-answer-${index}`} className={open.includes(index) ? 'faq-panel open' : 'faq-panel'}><p>{answer}</p></div></article>)}
   </div></section>
 }
