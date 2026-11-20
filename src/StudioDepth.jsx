@@ -1,4 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
+import digitalMarketingPhoto from '../assets/studio/digital-marketing.jpg'
+import socialMediaPhoto from '../assets/studio/social-media-studio.jpg'
+import ecommercePhoto from '../assets/studio/playbook-ecommerce.jpg'
+import b2bPhoto from '../assets/studio/playbook-b2b.jpg'
+import retailPhoto from '../assets/studio/playbook-retail.jpg'
+import campaignReviewPhoto from '../assets/studio/campaign-review.jpg'
 
 const channels = [
   { name: 'Search & Technical SEO', icon: '⌕', items: ['Technical site audit', 'Commercial keyword mapping', 'Search content roadmap', 'Qualified organic reporting'] },
@@ -17,9 +23,9 @@ const curves = [
   'M600 300 C750 300 760 470 980 470',
 ]
 const playbooks = [
-  { index: '01', industry: 'ECOMMERCE', title: 'Ecommerce Revenue Scaling', metrics: [['4.2x ROAS', 'Return on ad spend'], ['+145% Checkout Conversions', 'Conversion lift']], actions: ['Technical tracking audit', 'Google Shopping feed restructuring', 'Meta dynamic retargeting'] },
-  { index: '02', industry: 'B2B', title: 'B2B Qualified Lead Pipeline', metrics: [['+184% Organic Pipeline', 'Qualified demand'], ['41% Lower CPL', 'Lead efficiency']], actions: ['Commercial intent search content', 'LinkedIn decision maker targeting', 'Automated email follow ups'] },
-  { index: '03', industry: 'RETAIL & LOCAL', title: 'Retail & Local Brand Growth', metrics: [['3.1x Engagement', 'Audience response'], ['98% Response SLA', 'Community care']], actions: ['Structured monthly social calendar', 'Short form video production', 'Business hours community management'] },
+  { index: '01', industry: 'ECOMMERCE', image: ecommercePhoto, alt: 'Ecommerce products beside an online checkout analytics dashboard', title: 'Ecommerce Revenue Scaling', metrics: [['4.2x ROAS', 'Return on ad spend'], ['+145% Checkout Conversions', 'Conversion lift']], actions: ['Technical tracking audit', 'Google Shopping feed restructuring', 'Meta dynamic retargeting'] },
+  { index: '02', industry: 'B2B', image: b2bPhoto, alt: 'B2B team reviewing lead pipeline charts in a strategy meeting', title: 'B2B Qualified Lead Pipeline', metrics: [['+184% Organic Pipeline', 'Qualified demand'], ['41% Lower CPL', 'Lead efficiency']], actions: ['Commercial intent search content', 'LinkedIn decision maker targeting', 'Automated email follow ups'] },
+  { index: '03', industry: 'RETAIL & LOCAL', image: retailPhoto, alt: 'Lifestyle products and brand photography setup in a retail store', title: 'Retail & Local Brand Growth', metrics: [['3.1x Engagement', 'Audience response'], ['98% Response SLA', 'Community care']], actions: ['Structured monthly social calendar', 'Short form video production', 'Business hours community management'] },
 ]
 const stages = [
   ['01', 'Audit & Conversion Tracking', 'Review existing channels and conversion gaps, then configure events before campaign spend.'],
@@ -76,8 +82,9 @@ function List({ title, items, icon, delay, className = '' }) {
   return <Reveal className={`suite-card ${className}`} delay={delay}><div className="suite-card-title"><span className="suite-icon" aria-hidden="true">{icon}</span><h4>{title}</h4></div><ul className="suite-list">{items.map(item => <li key={item}><span aria-hidden="true">{icon === '×' ? '×' : '✓'}</span>{item}</li>)}</ul></Reveal>
 }
 function Suite({ item, number }) {
-  return <div className="service-suite">
-    <div className="suite-intro"><span className="eyebrow">SUITE {number}</span><h3>{item.name}</h3><p>{item.intro}</p></div>
+  const isSocial = number === '02'
+  return <div className={`service-suite ${isSocial ? 'suite-social' : ''}`}>
+    <Reveal className="suite-intro"><div className="suite-intro-copy"><span className="eyebrow">SUITE {number}</span><h3>{item.name}</h3><p>{item.intro}</p></div><div className="suite-photo"><img src={isSocial ? socialMediaPhoto : digitalMarketingPhoto} alt={isSocial ? 'Social media team planning content and filming brand reels' : 'Marketing strategist reviewing search and conversion analytics'} loading="lazy" decoding="async"/><span className="suite-photo-badge">{isSocial ? 'Content, Reels & Community' : 'Search, Paid Ads & Attribution'}</span></div></Reveal>
     <div className="suite-grid">
       <List title="The 4 Core Problems Solved" items={item.problem} icon="×" delay={0}/>
       <List title="Scope & What We Deliver" items={item.scope} icon="✓" delay={80}/>
@@ -95,9 +102,14 @@ export function FullServiceSuites({ data }) {
 }
 
 export function CampaignPlaybooks() {
-  return <section className="section playbooks-section" id="results"><div className="section-head"><span className="eyebrow">CAMPAIGN PLAYBOOKS & BENCHMARKS</span><h2>Focused plans for measurable outcomes.</h2><p>Three examples of how channel choices connect to commercial goals.</p></div><div className="playbook-grid">{playbooks.map((playbook, index) => <Reveal className="playbook-card" delay={index * 90} key={playbook.title}><span className="playbook-index">{playbook.index} · {playbook.industry}</span><h3>{playbook.title}</h3><div className="playbook-metrics">{playbook.metrics.map(([value, label]) => <div key={value}><strong>{value}</strong><small>{label}</small></div>)}</div><ul>{playbook.actions.map(action => <li key={action}><span aria-hidden="true">✓</span>{action}</li>)}</ul></Reveal>)}</div><p className="benchmark-note">Illustrative benchmarks for planning. These figures are not verified client results.</p></section>
+  return <section className="section playbooks-section" id="results"><div className="section-head"><span className="eyebrow">CAMPAIGN PLAYBOOKS & BENCHMARKS</span><h2>Focused plans for measurable outcomes.</h2><p>Three examples of how channel choices connect to commercial goals.</p></div><div className="playbook-grid">{playbooks.map((playbook, index) => <Reveal className="playbook-card" delay={index * 90} key={playbook.title}><div className="playbook-cover"><img src={playbook.image} alt={playbook.alt} loading="lazy" decoding="async"/><span className="playbook-industry">{playbook.industry}</span></div><div className="playbook-body"><span className="playbook-index">PLAYBOOK {playbook.index}</span><h3>{playbook.title}</h3><div className="playbook-metrics">{playbook.metrics.map(([value, label]) => <div key={value}><strong>{value}</strong><small>{label}</small></div>)}</div><ul>{playbook.actions.map(action => <li key={action}><span aria-hidden="true">✓</span>{action}</li>)}</ul></div></Reveal>)}</div><p className="benchmark-note">Illustrative benchmarks for planning. These figures are not verified client results.</p></section>
 }
 
 export function MonthlyProcess() {
-  return <section className="process-wrap monthly-process" id="process"><div className="section"><div className="section-head"><span className="eyebrow">HOW IT WORKS</span><h2>Clear steps. Measurable progress.</h2><p>A practical operating rhythm from strategy through ongoing improvement.</p></div><div className="process-grid">{stages.map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}</div><div className="monthly-rhythm"><h3>4 Week Monthly Execution Rhythm</h3><div>{weeks.map(([week, title, copy]) => <article key={week}><span>{week}</span><h4>{title}</h4><p>{copy}</p></article>)}</div></div></div></section>
+  const photos = [
+    { src: campaignReviewPhoto, alt: 'Team reviewing creative concepts and campaign analytics', caption: 'Strategy & Tracking Audit' },
+    { src: socialMediaPhoto, alt: 'Content team planning and filming social media reels', caption: 'Creative & Reels Production' },
+    { src: digitalMarketingPhoto, alt: 'Strategist reviewing campaign performance on a laptop', caption: 'Live Pipeline Optimization' },
+  ]
+  return <section className="process-wrap monthly-process" id="process"><div className="section"><div className="section-head"><span className="eyebrow">HOW IT WORKS</span><h2>Clear steps. Measurable progress.</h2><p>A practical operating rhythm from strategy through ongoing improvement.</p></div><div className="process-grid">{stages.map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}</div><div className="process-photo-strip">{photos.map((photo, index) => <Reveal className="process-photo-card" delay={index * 90} key={photo.caption}><img src={photo.src} alt={photo.alt} loading="lazy" decoding="async"/><div className="process-photo-caption"><span aria-hidden="true">0{index + 1}</span><h3>{photo.caption}</h3></div></Reveal>)}</div><div className="monthly-rhythm"><h3>4 Week Monthly Execution Rhythm</h3><div>{weeks.map(([week, title, copy]) => <article key={week}><span>{week}</span><h4>{title}</h4><p>{copy}</p></article>)}</div></div></div></section>
 }
