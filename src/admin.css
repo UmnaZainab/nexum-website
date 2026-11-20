@@ -68,6 +68,7 @@
 :root[data-theme="light"] .admin-error{color:#8E0C1B}
 .admin-page{background:var(--bg);color:var(--text)}
 .admin-brand{display:inline-flex;align-items:center;gap:10px;letter-spacing:0;font-family:Manrope,sans-serif}
+.admin-brand .brand-wordmark{width:180px}
 .admin-brand span{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
 .admin-brand strong{font-size:.93rem;letter-spacing:-.035em;color:var(--text)}
 .admin-brand small{font-size:.53rem;letter-spacing:.14em;color:var(--muted)}

@@ -86,19 +86,17 @@ function Suite({ item, number }) {
   return <div className={`service-suite ${isSocial ? 'suite-social' : ''}`}>
     <Reveal className="suite-intro"><div className="suite-intro-copy"><span className="eyebrow">SUITE {number}</span><h3>{item.name}</h3><p>{item.intro}</p></div><div className="suite-photo"><img src={isSocial ? socialMediaPhoto : digitalMarketingPhoto} alt={isSocial ? 'Social media team planning content and filming brand reels' : 'Marketing strategist reviewing search and conversion analytics'} loading="lazy" decoding="async"/><span className="suite-photo-badge">{isSocial ? 'Content, Reels & Community' : 'Search, Paid Ads & Attribution'}</span></div></Reveal>
     <div className="suite-grid">
-      <List title="The 4 Core Problems Solved" items={item.problem} icon="×" delay={0}/>
-      <List title="Scope & What We Deliver" items={item.scope} icon="✓" delay={80}/>
-      <Reveal className="suite-card" delay={160}><div className="suite-card-title"><span className="suite-icon" aria-hidden="true">↗</span><h4>Benefits & What Changes</h4></div><h5>Key Benefits</h5><ul className="suite-list">{item.benefits.map(text => <li key={text}><span aria-hidden="true">↗</span>{text}</li>)}</ul><h5>What Changes</h5><ul className="suite-list">{item.changes.map(text => <li key={text}><span aria-hidden="true">↗</span>{text}</li>)}</ul></Reveal>
-      <Reveal className="suite-card" delay={240}><div className="suite-card-title"><span className="suite-icon" aria-hidden="true">✦</span><h4>Included Deliverables, Technology & Industries</h4></div>
-        <div className="suite-tag-group"><h5>Included Deliverables</h5><div>{item.included.map(text => <Tag key={text}>{text}</Tag>)}</div></div>
+      <List title="The Problem We Solve" items={item.problem} icon="×" delay={0}/>
+      <List title="What We Deliver" items={item.scope} icon="✓" delay={80}/>
+      <Reveal className="suite-card suite-outcomes" delay={160}><div className="suite-card-title"><span className="suite-icon" aria-hidden="true">↗</span><h4>Expected Outcomes & Stack</h4></div><ul className="suite-list">{item.benefits.map(text => <li key={text}><span aria-hidden="true">↗</span>{text}</li>)}</ul>
         <div className="suite-tag-group"><h5>Technology Stack</h5><div>{item.stack.map(text => <Tag key={text}>{text}</Tag>)}</div></div>
-        <div className="suite-tag-group"><h5>Industries Served</h5><div>{item.industries.map(text => <Tag key={text}>{text}</Tag>)}</div></div>
+        <details className="suite-more"><summary>Explore full outcomes and inclusions</summary><h5>What Changes</h5><ul className="suite-list">{item.changes.map(text => <li key={text}><span aria-hidden="true">↗</span>{text}</li>)}</ul><div className="suite-tag-group"><h5>Included Deliverables</h5><div>{item.included.map(text => <Tag key={text}>{text}</Tag>)}</div></div><div className="suite-tag-group"><h5>Industries Served</h5><div>{item.industries.map(text => <Tag key={text}>{text}</Tag>)}</div></div></details>
       </Reveal>
     </div>
   </div>
 }
 export function FullServiceSuites({ data }) {
-  return <section className="section full-services" id="services"><div className="section-head"><span className="eyebrow">COMPLETE SERVICE SUITES</span><h2>Digital and social, working as one.</h2><p>Explore the full scope of each discipline and the changes you can expect from a connected strategy.</p></div><Suite item={data.digital} number="01"/><Suite item={data.social} number="02"/></section>
+  return <section className="section full-services" id="services"><div className="section-head"><span className="eyebrow">COMPLETE SERVICE SUITES</span><h2>Digital and social, working as one.</h2><p>Two focused suites, one measurable growth plan.</p></div><Suite item={data.digital} number="01"/><Suite item={data.social} number="02"/></section>
 }
 
 export function CampaignPlaybooks() {

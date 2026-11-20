@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { formatPrice } from './pricingItems'
 import ThemeToggle from './ThemeToggle'
+import BrandWordmark from './BrandWordmark.jsx'
 import './admin.css'
 
 const endpoint = '/.netlify/functions/admin'
 const pricingEndpoint = '/.netlify/functions/pricing'
-const AdminBrand = () => <a className="admin-brand" href="/"><svg width="38" height="38" viewBox="0 0 38 38" aria-hidden="true"><rect width="38" height="38" rx="10" fill="#CC0000"/><path d="M9 29V9h5.2l9.6 11.4V9H29v20h-5.2L14.2 17.6V29Z" fill="#fff"/></svg><span><strong>Nexum Digital Studio</strong><small>NEXUM GLOBAL SOLUTIONS</small></span></a>
+const AdminBrand = ({ id }) => <a className="admin-brand" href="/"><BrandWordmark id={id}/></a>
 
 async function adminRequest(method = 'GET', body, path = endpoint) {
   const response = await fetch(path, {
@@ -229,7 +230,7 @@ export default function Admin({ theme, setTheme }) {
 
   return <div className="admin-page">
     {!authorized ? <div className="admin-login-shell"><form className="admin-login-card" onSubmit={login}>
-      <div className="admin-login-top"><AdminBrand/><ThemeToggle theme={theme} setTheme={setTheme} /></div>
+      <div className="admin-login-top"><AdminBrand id="admin-login-brand"/><ThemeToggle theme={theme} setTheme={setTheme} /></div>
       <p className="admin-eyebrow">PRIVATE DASHBOARD</p>
       <h1>Admin sign in</h1>
       <p>Enter your credentials to manage inquiries and pricing.</p>
@@ -239,7 +240,7 @@ export default function Admin({ theme, setTheme }) {
       {error && <p className="admin-error" role="alert">{error}</p>}
     </form></div> : <div className="admin-dashboard">
       <header className="admin-dashboard-head">
-        <div><AdminBrand/><h1>{tab === 'inquiries' ? 'Inquiries' : 'Pricing'}</h1><p>{tab === 'inquiries' ? 'Contact form submissions, newest first.' : 'Live amounts shown on Nexum Digital Studio pricing cards.'}</p></div>
+        <div><AdminBrand id="admin-dashboard-brand"/><h1>{tab === 'inquiries' ? 'Inquiries' : 'Pricing'}</h1><p>{tab === 'inquiries' ? 'Contact form submissions, newest first.' : 'Live amounts shown on Nexum Digital Studio pricing cards.'}</p></div>
         <div className="admin-controls"><ThemeToggle theme={theme} setTheme={setTheme} /><button type="button" onClick={refresh} disabled={busy}>Refresh</button><button type="button" onClick={() => {setAction('password');setError('')}}>Change Password</button>{role === 'super_admin' && <button type="button" onClick={() => {setAction('user');setError('')}}>Add New User</button>}<button type="button" onClick={logout} disabled={busy}>Logout</button></div>
       </header>
       <div className="admin-session">Signed in as {username}</div>
